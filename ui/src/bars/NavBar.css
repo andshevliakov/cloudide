@@ -1,0 +1,35 @@
+@import url('../assets/styles/variables.css');
+
+.navbar {
+    background-color: #333;
+    height: var(--topbar-height);
+    width: 100%;
+    border-bottom: 1px solid #555;
+    display: flex;
+    align-items: center;
+  }
+  
+.navbar li {
+  display: inline-block;
+  margin-right: 20px;
+  font-size: 14px;
+}
+
+.navbar li:first-child {
+  margin-left: var(--leftbar-width);
+}
+
+.navbar li:last-child {
+  margin-right: 0;
+}
+
+.navbar a {
+  color: #eee;
+  font-weight: bold;
+  display: inline-block;
+  text-decoration: none;
+}
+  
+.navbar a:hover {
+  background-color: #444;
+}
