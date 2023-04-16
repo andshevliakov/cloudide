@@ -10,8 +10,8 @@ const leftbarStyle = {
 
 function Leftbar() {
     return (
-    <div class="left-bar">
-        <nav class="left-bar">
+    <div className="left-bar">
+        <nav className="left-bar">
             <ul>
                 <li><a href="#"><img style={leftbarStyle} src={documentlogo} alt="Documents"/></a></li>
                 <li><a href="#"><img style={leftbarStyle} src={gitlogo} alt="Git"/></a></li>

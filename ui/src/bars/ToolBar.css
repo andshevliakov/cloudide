@@ -1,0 +1,45 @@
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #222;
+    color: #fff;
+    height: 30px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.toolbar-leftside {
+    width: 100px;
+    height: 100%;
+}
+
+.toolbar-rightside {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    padding: 0px 0px;
+    margin-left: 10px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+button:focus {
+    outline: none;
+}
+
+.material-icons {
+    color: green;
+}
