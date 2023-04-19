@@ -4,7 +4,10 @@ import './App.css';
 import Cell from './cell/Cell';
 import Bars from './bars/Bars';
 
-const executorUrl = process.env.EXECUTOR_URI || 'http://localhost:8000'
+const executorUrl = process.env.REACT_APP_EXECUTOR_URI || 'http://localhost:8000'
+const routes = {
+  code_run_route: '/code'
+}
 
 class App extends React.Component {
   constructor(props) {
@@ -17,12 +20,14 @@ class App extends React.Component {
   }
 
   handleRun = () => {
-    fetch(executorUrl, {
+    fetch(executorUrl + routes.code_run_route, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify(this.state.code)
+      body: JSON.stringify(this.state.code),
+      mode: 'cors'
     })
     .then(response => response.json())
     .then(data => console.log(data))
