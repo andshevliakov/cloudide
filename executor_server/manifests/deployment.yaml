@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui-manager
+  template:
+    metadata:
+      labels:
+        app: ui-manager
+    spec:
+      containers:
+      - name: ui
+        image: ui-manager
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+

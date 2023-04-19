@@ -1,0 +1,9 @@
+.git
+.gitignore
+git*
+.env
+Makefile
+Dockerfile
+__pycache__
+*.md
+manifests
