@@ -1,0 +1,9 @@
+.gitignore
+.git
+git*
+.env
+Dockerfile
+*.md
+node_modules
+Makefile
+manifests
