@@ -23,8 +23,7 @@ class App extends React.Component {
     fetch(executorUrl + routes.code_run_route, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(this.state.code),
       mode: 'cors'
