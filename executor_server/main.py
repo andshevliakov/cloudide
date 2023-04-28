@@ -1,20 +1,18 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask
 from api.code_execution import code_execution
-from flask_cors import CORS, cross_origin
-from dotenv import load_dotenv
-
-load_dotenv()
-
-UI_URI = os.getenv('UI_URI')
-EXECUTOR_PORT = os.getenv('EXECUTOR_PORT')
-
+from api.token_blueprint import token_blueprint
+from api.user_blueprint import user_blueprint
+from flask_cors import CORS
+from envloader import EXECUTOR_PORT
 
 app = Flask(__name__)
 # TODO add restrict polic
 CORS(app)
 
 app.register_blueprint(code_execution)
+app.register_blueprint(token_blueprint, url_prefix='/token')
+app.register_blueprint(user_blueprint, url_prefix='/user')
 
 
 if __name__ == '__main__':

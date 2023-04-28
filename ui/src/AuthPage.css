@@ -1,0 +1,31 @@
+.auth-page {
+    background-color: #1e1e1e;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-page form {
+    background-color: #3c3c3c;
+    padding: 3rem;
+    border-radius: 0.25rem;
+}
+
+.auth-page form button {
+    background-color: #4d4d4d;
+    border: none;
+    margin-top: 2rem;
+    padding: 1rem 2rem;
+    border-radius: 0.25rem;
+}
+
+.auth-page form button:disabled {
+    background-color: #383838;
+    cursor: not-allowed;
+}
