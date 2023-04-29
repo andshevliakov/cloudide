@@ -17,6 +17,22 @@
     border-radius: 0.25rem;
 }
 
+.auth-page__signup {
+    text-align: center;
+    margin-top: 1rem;
+    color: #fff;
+}
+
+.auth-page__signup a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.auth-page__signup a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
 .auth-page form button {
     background-color: #4d4d4d;
     border: none;

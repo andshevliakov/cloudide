@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify
 from db_controller.db_controller import DBController
 from envloader import DB_HOST, DB_PASSWD, DB_USER, DB_NAME
 
-TABLE_NAME = 'users'
+TABLE_NAME = 'users1'
 
 user_blueprint = Blueprint('user_blueprint', __name__)
 
@@ -18,13 +18,23 @@ try:
         table=TABLE_NAME,
         columns={
             'id': 'INT PRIMARY KEY AUTO_INCREMENT',
-            'username': 'VARCHAR(50) NOT NULL UNIQUE',
+            'name': 'VARCHAR(100) NOT NULL',
+            'surname': 'VARCHAR(100) NOT NULL',
+            'username': 'VARCHAR(100) NOT NULL UNIQUE',
             'password': 'VARCHAR(100) NOT NULL',
             'created_at': 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP'
         })
 except mysql.connector.errors.DatabaseError as e:
     logging.error('Database error occured: %s', e)
     sys.exit(1)
+
+
+@user_blueprint.route("/create", methods=['POST'])
+async def add_user():
+    response = {}
+    data = request.get_json()
+    result = db_controller.add_row_in_db(table=TABLE_NAME, values=data)
+    return jsonify(response), 200
 
 
 @user_blueprint.route('/verify', methods=['GET'])

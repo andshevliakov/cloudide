@@ -3,6 +3,7 @@ import mysql.connector
 
 DATABASE_CREATION_QUERY = 'CREATE DATABASE'
 TABLE_CREATION_QUERY = 'CREATE TABLE'
+# TODO ORM
 
 
 class DBController():
@@ -46,7 +47,7 @@ class DBController():
         except mysql.connector.errors.DatabaseError as e:
             logging.warning('Database error: %s', e)
 
-    def is_exist_in_db(self, table: str, values: dict):
+    def is_exist_in_db(self, table: str, values: dict) -> tuple:
         query = f"SELECT * FROM {table} WHERE "
         params = []
         for key, value in values.items():
@@ -56,6 +57,23 @@ class DBController():
 
         cursor = self._conn.cursor()
         cursor.execute(bool_query)
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+
+    def add_row_in_db(self, table: str, values: dict) -> tuple:
+        query = f"INSERT INTO {table} ("
+        params_columns = []
+        params_insert = []
+        for key, values in values.items():
+            params_columns.append(f"{key}")
+            params_insert.append(f"'{values}'")
+        query += ",".join(params_columns)
+        query += ') VALUES ('
+        query += ",".join(params_insert)
+        query += ")"
+        cursor = self._conn.cursor()
+        cursor.execute(query)
         result = cursor.fetchone()
         cursor.close()
         return result
