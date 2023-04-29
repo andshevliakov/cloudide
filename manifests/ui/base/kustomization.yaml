@@ -1,12 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: cloudide-ui-manager
 resources:
 - deployment.yaml
 - service.yaml
-- namespace.yaml
 
 images:
-- name: ui-manager
-  newName: andriisoft/cloudide-ui-manager
+- name: ui-image
+  newName: andriisoft/cloudide-ui
   newTag: latest

@@ -23,9 +23,7 @@ undeploy-dex:
 	kustomize build common/dex/manifests | kubectl delete -f -
 
 deploy-all-apps:
-	kustomize build ui/manifests | kubectl apply -f -
-	kustomize build executor_server/manifests | kubectl apply -f -
+	kustomize build userController/config/default | kubectl apply -f -
 
 undeploy-all-apps:
-	kustomize build ui/manifests | kubectl delete -f -
-	kustomize build executor_server/manifests | kubectl delete -f -
+	kustomize build userController/config/default | kubectl delete -f -
