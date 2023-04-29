@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-UI_URI = os.getenv('UI_URI')
-EXECUTOR_PORT = os.getenv('EXECUTOR_PORT')
+MANAGER_PORT = os.getenv('MANAGER_PORT')
 
 DB_HOST = os.getenv('DB_HOST')
 DB_USER = os.getenv('DB_USER')

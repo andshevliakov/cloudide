@@ -1,29 +1,40 @@
 TAG ?= latest
 
+MYSQL_ROOT_PASSWORD ?= cloudide
+MYSQL_DATABASE ?= users
+MYSQL_USER ?= myuser
+MYSQL_PASSWORD ?= mysqlide
+
+mysql-export:
+	export MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD)
+	export MYSQL_DATABASE=$(MYSQL_DATABASE)
+	export MYSQL_USER=$(MYSQL_USER)
+	export MYSQL_PASSWORD=$(MYSQL_PASSWORD)
+
 build-all:
-	make -C executor_server build-image
+	make -C ui-manager build-image
 	make -C ui build-image
 
 push-all:
-	make -C executor_server push-image
+	make -C ui-manager push-image
 	make -C ui push-image
 
 build-and-push:
-	make -C executor_server build-and-push-image
+	make -C ui-manager build-and-push-image
 	make -C ui build-and-push-image
 
-generate-certificates:
-	./scripts/gencert.sh
+deploy-mysql: mysql-export
+	MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD) \
+	MYSQL_DATABASE=$(MYSQL_DATABASE) \
+	MYSQL_USER=$(MYSQL_USER) \
+	MYSQL_PASSWORD=$(MYSQL_PASSWORD) \
+		kustomize build manifests/mysql | kubectl apply -f -
 
-deploy-dex: generate-certificates
-	kustomize build common/dex/manifests | kubectl apply -f -
-	kubectl -n dex create secret tls dex.example.com.tls --cert=ssl/cert.pem --key=ssl/key.pem
+undeploy-mysql:
+	kustomize build manifests/mysql | kubectl delete -f -
 
-undeploy-dex: 
-	kustomize build common/dex/manifests | kubectl delete -f -
-
-deploy-all-apps:
+deploy-usercontroller:
 	kustomize build userController/config/default | kubectl apply -f -
 
-undeploy-all-apps:
+undeploy-usercontroller:
 	kustomize build userController/config/default | kubectl delete -f -
