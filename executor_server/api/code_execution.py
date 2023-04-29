@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from flask_cors import cross_origin
 from runner.runner import Runner
 
 executor = Runner()
