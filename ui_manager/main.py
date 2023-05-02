@@ -4,7 +4,7 @@ from api.code_execution import code_execution
 from api.token_blueprint import token_blueprint
 from api.user_blueprint import user_blueprint
 from flask_cors import CORS
-from envloader import EXECUTOR_PORT
+from envloader import MANAGER_PORT
 
 app = Flask(__name__)
 # TODO add restrict polic
@@ -16,4 +16,4 @@ app.register_blueprint(user_blueprint, url_prefix='/user')
 
 
 if __name__ == '__main__':
-    app.run(port=EXECUTOR_PORT, debug=True)
+    app.run(port=MANAGER_PORT, debug=True)

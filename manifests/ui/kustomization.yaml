@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cloudide-ui-ns
+
+resources:
+- ui-app
+- ui-manager
+- namespace.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+- name: ui-parameters
+  envs:
+  - params.env

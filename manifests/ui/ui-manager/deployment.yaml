@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui-manager
+  template:
+    metadata:
+      labels:
+        app: ui-manager
+    spec:
+      containers:
+      - name: ui
+        image: ui-manager
+        env:
+        - name: MANAGER_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: ui-parameters
+              key: MANAGER_PORT
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: ui-parameters
+              key: MYSQL_HOST
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: ui-parameters
+              key: MYSQL_USER
+        - name: DB_PASSWD
+          valueFrom:
+            configMapKeyRef:
+              name: ui-parameters
+              key: MYSQL_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: ui-parameters
+              key: MYSQL_DATABASE
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
