@@ -7,3 +7,10 @@ resources:
 - ui-app
 - ui-manager
 - namespace.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+- name: ui-parameters
+  envs:
+  - params.env

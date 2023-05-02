@@ -17,7 +17,6 @@ configMapGenerator:
   - params.env
 
 #only for mac
-
 images:
 - name: mysql
   newName: arm64v8/mysql
