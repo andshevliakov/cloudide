@@ -21,14 +21,3 @@ images:
 - name: mysql
   newName: arm64v8/mysql
   newTag: "8"
-
-# vars:
-# - name: MYSQL_ROOT_PASSWORD
-#   objref:
-#     kind: ConfigMap
-#     name: mysql-parameters
-#     apiVersion: v1
-#   fieldref:
-#     fieldpath: data.MYSQL_ROOT_PASSWORD
-# configurations:
-# - params.yaml
