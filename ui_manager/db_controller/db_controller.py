@@ -1,79 +1,30 @@
-import logging
-import mysql.connector
+from flask_sqlalchemy import SQLAlchemy
 
-DATABASE_CREATION_QUERY = 'CREATE DATABASE'
-TABLE_CREATION_QUERY = 'CREATE TABLE'
-# TODO ORM
+db = SQLAlchemy()
 
 
-class DBController():
-    def __init__(self, host: str, user: str, passwd: str, db: str, table='', columns={}) -> None:
-        try:
-            self._conn = mysql.connector.connect(
-                host=host,
-                user=user,
-                password=passwd,
-                database=db
-            )
-            self._cursor = self._conn.cursor()
-        except mysql.connector.errors.ProgrammingError:
-            self._conn = mysql.connector.connect(
-                host=host,
-                user=user,
-                password=passwd
-            )
-            cursor = self._conn.cursor()
-            cursor.execute(f"{DATABASE_CREATION_QUERY} {db}")
-            cursor.close()
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False)
+    surname = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(100), nullable=False, unique=True)
+    password = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(
+        db.TIMESTAMP, server_default=db.func.current_timestamp(), nullable=False)
 
-        if not self._conn.is_connected():
-            raise mysql.connector.errors.DatabaseError(
-                'Database connection not established')
+    def __init__(self, data):
+        self.name = data.get('name')
+        self.surname = data.get('surname')
+        self.username = data.get('username')
+        self.password = data.get('password')
 
-        if table != '':
-            self._create_table(table, columns)
 
-    def _create_table(self, table: str, columns: dict) -> None:
-        query = f"{TABLE_CREATION_QUERY} {table} ("
-        columnrows = []
-        for key, value in columns.items():
-            columnrows.append(f"{key} {value}")
-        query += ', '.join(columnrows)
-        query += ');'
-        try:
-            cursor = self._conn.cursor()
-            cursor.execute(query)
-            cursor.close()
-        except mysql.connector.errors.DatabaseError as e:
-            logging.warning('Database error: %s', e)
+def create_user(user_json: dict) -> None:
+    user = User(user_json)
+    db.session.add(user)
+    db.session.commit()
 
-    def is_exist_in_db(self, table: str, values: dict) -> tuple:
-        query = f"SELECT * FROM {table} WHERE "
-        params = []
-        for key, value in values.items():
-            params.append(f"{key}='{value}'")
-        query += " AND ".join(params)
-        bool_query = f"SELECT EXISTS({query})"
 
-        cursor = self._conn.cursor()
-        cursor.execute(bool_query)
-        result = cursor.fetchone()
-        cursor.close()
-        return result
-
-    def add_row_in_db(self, table: str, values: dict) -> tuple:
-        query = f"INSERT INTO {table} ("
-        params_columns = []
-        params_insert = []
-        for key, values in values.items():
-            params_columns.append(f"{key}")
-            params_insert.append(f"'{values}'")
-        query += ",".join(params_columns)
-        query += ') VALUES ('
-        query += ",".join(params_insert)
-        query += ")"
-        cursor = self._conn.cursor()
-        cursor.execute(query)
-        result = cursor.fetchone()
-        cursor.close()
-        return result
+def find_user(user_json: dict) -> None:
+    user = User(user_json)
+    return db.session.query(User).filter_by(username=user.username, password=user.password).first_or_404()

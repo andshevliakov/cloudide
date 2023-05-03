@@ -49,7 +49,7 @@ class App extends React.Component {
       });
       return true;
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 404) {
         this.setState({ errorMessage: 'Invalid username or password', showError: true });
         setTimeout(() => {
           this.setState({ showError: false });

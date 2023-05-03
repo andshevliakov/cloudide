@@ -2,38 +2,18 @@ import sys
 import mysql.connector
 import logging
 from flask import Blueprint, request, jsonify
-from db_controller.db_controller import DBController
 from envloader import DB_HOST, DB_PASSWD, DB_USER, DB_NAME
-
-TABLE_NAME = 'users1'
+from db_controller.db_controller import create_user, find_user
 
 user_blueprint = Blueprint('user_blueprint', __name__)
-
-try:
-    db_controller = DBController(
-        host=DB_HOST,
-        user=DB_USER,
-        passwd=DB_PASSWD,
-        db=DB_NAME,
-        table=TABLE_NAME,
-        columns={
-            'id': 'INT PRIMARY KEY AUTO_INCREMENT',
-            'name': 'VARCHAR(100) NOT NULL',
-            'surname': 'VARCHAR(100) NOT NULL',
-            'username': 'VARCHAR(100) NOT NULL UNIQUE',
-            'password': 'VARCHAR(100) NOT NULL',
-            'created_at': 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP'
-        })
-except mysql.connector.errors.DatabaseError as e:
-    logging.error('Database error occured: %s', e)
-    sys.exit(1)
 
 
 @user_blueprint.route("/create", methods=['POST'])
 async def add_user():
     response = {}
     data = request.get_json()
-    result = db_controller.add_row_in_db(table=TABLE_NAME, values=data)
+    create_user(data)
+    response = "User created"
     return jsonify(response), 200
 
 
@@ -57,16 +37,9 @@ async def verify_user():
         'username': username,
         'password': password
     }
-    result = db_controller.is_exist_in_db(TABLE_NAME, values)
-    value, = result
-    is_exist = True if value == 1 else False
-    if is_exist:
+    result = find_user(values)
+    if result:
         response = {
             'username': username
         }
         return jsonify(response), 200
-    else:
-        response = {
-            'message': 'Invalid username or password'
-        }
-        return jsonify(response), 401
