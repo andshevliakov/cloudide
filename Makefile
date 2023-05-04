@@ -4,21 +4,21 @@ MYSQL_ROOT_PASSWORD ?= cloudide
 MYSQL_DATABASE ?= users
 MYSQL_USER ?= myuser
 MYSQL_PASSWORD ?= mysqlide
-MYSQL_HOST ?= mysql.mysql-ns.svc.cluster.local:3306
+MYSQL_HOST ?= mysql.mysql-ns.svc.cluster.local
 MANAGER_PORT ?= 5000
 MANAGER_HOST ?= ui-manager-service.cloudide-ui-ns.svc.cluster.local
 REACT_APP_EXECUTOR_URI ?= http://$(MANAGER_HOST):$(MANAGER_PORT)
 
 build-all:
-	make -C ui-manager build-image
+	make -C ui_manager build-image
 	make -C ui build-image
 
 push-all:
-	make -C ui-manager push-image
+	make -C ui_manager push-image
 	make -C ui push-image
 
 build-and-push:
-	make -C ui-manager build-and-push-image
+	make -C ui_manager build-and-push-image
 	make -C ui build-and-push-image
 
 deploy-mysql:
