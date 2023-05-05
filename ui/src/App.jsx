@@ -8,7 +8,7 @@ import Bars from './bars/Bars';
 import AuthPage from './AuthPage';
 import { SHA256 } from 'crypto-js';
 import routes from './routes';
-import executorUrl from './envloader';
+import managerUrl from './envloader';
 import { verifyToken } from './tokenManager';
 import SignupPage from './SignupPage';
 
@@ -39,7 +39,7 @@ class App extends React.Component {
   };
 
   verifyUser = async (username, password) => {
-    const url = executorUrl + routes.user_route + '/verify';
+    const url = managerUrl + routes.user_route + '/verify';
     try {
       await axios.get(url, {
         params: {
@@ -62,7 +62,7 @@ class App extends React.Component {
   };
 
   onSignUp = async ({ name, surname, username, password }) => {
-    const url = executorUrl + routes.user_route + '/create'
+    const url = managerUrl + routes.user_route + '/create'
     try {
       const response = await axios.post(url, {
         'name': name,
@@ -79,7 +79,7 @@ class App extends React.Component {
     const verified = await this.verifyUser(username, password);
     if (verified) {
       try {
-        const response = await axios.get(executorUrl + routes.token_route + '/generate', {
+        const response = await axios.get(managerUrl + routes.token_route + '/generate', {
           params: {
             username: username,
           }
