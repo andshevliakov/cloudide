@@ -6,7 +6,7 @@ MYSQL_USER ?= myuser
 MYSQL_PASSWORD ?= mysqlide
 MYSQL_HOST ?= mysql.mysql-ns.svc.cluster.local
 MANAGER_PORT ?= 5000
-MANAGER_HOST ?= ui-manager-service.cloudide-ui-ns.svc.cluster.local
+MANAGER_HOST ?= localhost
 REACT_APP_EXECUTOR_URI ?= http://$(MANAGER_HOST):$(MANAGER_PORT)
 
 build-all:

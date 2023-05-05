@@ -7,6 +7,8 @@ spec:
     app: ui-app
   type: NodePort
   ports:
-  - port: 3000
+  - name: ui
+    port: 80
     targetPort: 3000
     nodePort: 31000
+    protocol: TCP

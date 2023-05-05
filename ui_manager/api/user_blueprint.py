@@ -1,5 +1,4 @@
 import sys
-import mysql.connector
 import logging
 from flask import Blueprint, request, jsonify
 from envloader import DB_HOST, DB_PASSWD, DB_USER, DB_NAME
@@ -13,8 +12,10 @@ async def add_user():
     response = {}
     data = request.get_json()
     create_user(data)
-    response = "User created"
-    return jsonify(response), 200
+    response = {
+        'message': "User created"
+    }
+    return jsonify(response), 201
 
 
 @user_blueprint.route('/verify', methods=['GET'])
@@ -23,13 +24,13 @@ async def verify_user():
     username = request.args.get('username')
     if username is None:
         response = {
-            'Username is not set'
+            'message': 'Username is not set'
         }
         return jsonify(response), 400
     password = request.args.get('password')
     if password is None:
         response = {
-            'Password is not set'
+            'message': 'Password is not set'
         }
         return jsonify(response), 400
 
