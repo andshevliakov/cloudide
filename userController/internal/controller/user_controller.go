@@ -193,7 +193,7 @@ func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *clo
 							Containers: []corev1.Container{
 								{
 									Name:  "executor",
-									Image: "kamlando/ubuntu-sleep:latest",
+									Image: "andriisoft/cloudide-executor:latest",
 								},
 							},
 						},

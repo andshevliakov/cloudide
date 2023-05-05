@@ -1,5 +1,5 @@
 const routes = {
-    code_run_route: '/code',
+    code_route: '/code',
     user_route: '/user',
     token_route: '/token',
 }
