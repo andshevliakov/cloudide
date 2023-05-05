@@ -61,7 +61,7 @@ class App extends React.Component {
     }
   };
 
-  onSignUp = async ({ name, surname, username, password }) => {
+  createUser = async (name, surname, username, password) => {
     const url = managerUrl + routes.user_route + '/create'
     try {
       const response = await axios.post(url, {
@@ -70,8 +70,20 @@ class App extends React.Component {
         'username': username,
         'password': SHA256(password).toString()
       });
+      return response.status
     } catch (error) {
       console.error(`${error.response.status} ${error.response.data}`);
+      return error.response.status
+    }
+  };
+
+  onSignUp = async ({ name, surname, username, password }) => {
+    const status = await this.createUser(name, surname, username, password)
+    if (status !== 201) {
+      this.setState({ errorMessage: 'User not created', showError: true });
+      setTimeout(() => {
+        this.setState({ showError: false });
+      }, 5000);
     }
   };
 
@@ -97,7 +109,8 @@ class App extends React.Component {
   };
 
   handleRun = async () => {
-    const url = executorUrl + routes.code_route + '/run'
+    // Chande to executorUrl
+    const url = managerUrl + routes.code_route + '/run'
     try {
       const response = await axios.post(url, {
         'code': this.state.code
