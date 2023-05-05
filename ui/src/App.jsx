@@ -96,17 +96,17 @@ class App extends React.Component {
     this.setState({ code: newCode });
   };
 
-  handleRun = () => {
-    fetch(executorUrl + routes.code_run_route, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state.code),
-    })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error(error));
+  handleRun = async () => {
+    const url = executorUrl + routes.code_route + '/run'
+    try {
+      const response = await axios.post(url, {
+        'code': this.state.code
+      })
+      console.log(response)
+    } catch (error) {
+      console.error(`${error.response.status} ${error.response.data}`);
+    }
+
   };
 
   render() {
