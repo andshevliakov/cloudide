@@ -7,7 +7,7 @@ MYSQL_PASSWORD ?= mysqlide
 MYSQL_HOST ?= mysql.mysql-ns.svc.cluster.local
 MANAGER_PORT ?= 5000
 MANAGER_HOST ?= localhost
-REACT_APP_EXECUTOR_URI ?= http://$(MANAGER_HOST):$(MANAGER_PORT)
+REACT_APP_MANAGER_URI ?= http://$(MANAGER_HOST):$(MANAGER_PORT)
 
 build-all:
 	make -C ui_manager build-image
@@ -43,7 +43,7 @@ deploy-ui:
 	MYSQL_USER=$(MYSQL_USER) \
 	MYSQL_PASSWORD=$(MYSQL_PASSWORD) \
 	MYSQL_HOST=$(MYSQL_HOST) \
-	REACT_APP_EXECUTOR_URI=$(REACT_APP_EXECUTOR_URI) \
+	REACT_APP_MANAGER_URI=$(REACT_APP_MANAGER_URI) \
 	MANAGER_PORT=$(MANAGER_PORT) \
 	kustomize build manifests/ui | kubectl apply -f -
 

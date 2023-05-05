@@ -1,3 +1,3 @@
-const executorUrl = process.env.REACT_APP_EXECUTOR_URI || 'http://localhost:8000'
-
-export default executorUrl
+const managerUrl = process.env.REACT_APP_MANAGER_URI || 'http://localhost:8000'
+const executorUrl = ""
+export default managerUrl; executorUrl

@@ -16,11 +16,11 @@ spec:
       - name: ui
         image: ui-image
         env:
-        - name: REACT_APP_EXECUTOR_URI
+        - name: REACT_APP_MANAGER_URI
           valueFrom:
             configMapKeyRef:
               name: ui-parameters
-              key: REACT_APP_EXECUTOR_URI
+              key: REACT_APP_MANAGER_URI
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
