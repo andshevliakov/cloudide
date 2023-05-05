@@ -4,3 +4,4 @@ python-dotenv==1.0.0
 pyjwt==2.6.0
 mysql-connector-python==8.0.33
 Flask-SQLAlchemy==3.0.3
+kubernetes==26.1.0

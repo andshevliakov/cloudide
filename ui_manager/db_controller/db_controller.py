@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
 
 db = SQLAlchemy()
 
@@ -19,12 +20,19 @@ class User(db.Model):
         self.password = data.get('password')
 
 
-def create_user(user_json: dict) -> None:
+def create_user(user_json: dict) -> bool:
     user = User(user_json)
-    db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except SQLAlchemyError as error:
+        print(error)
+        db.session.rollback()
+        return False
+    else:
+        return True
 
 
-def find_user(user_json: dict) -> None:
+def find_user(user_json: dict):
     user = User(user_json)
     return db.session.query(User).filter_by(username=user.username, password=user.password).first_or_404()
