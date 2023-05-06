@@ -39,7 +39,7 @@ RUN wget -O /tmp/Miniforge3.sh "https://github.com/conda-forge/miniforge/release
     ${CONDA_DIR}/bin/conda init bash && \
     . ~/.bashrc
 
-COPY conda.yaml ${EXECUTOR_HOME}/conda.yaml
+COPY ./ ${EXECUTOR_HOME}/
 
 
 RUN conda env create --file ${EXECUTOR_HOME}/conda.yaml && \
@@ -47,4 +47,11 @@ RUN conda env create --file ${EXECUTOR_HOME}/conda.yaml && \
     echo "conda activate ${CONDA_ENV_NAME}" >> ~/.bashrc && \
     . ~/.bashrc
 
-ENTRYPOINT [ "sleep", "infinity" ]
+
+EXPOSE 5000
+
+WORKDIR  ${EXECUTOR_HOME}
+
+RUN pip install -r app/requirements.txt
+
+ENTRYPOINT [ "python", "app/app.py" ]
