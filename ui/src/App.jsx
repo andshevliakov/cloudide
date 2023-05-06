@@ -125,7 +125,7 @@ class App extends React.Component {
   render() {
     const { isAuthenticated, errorMessage } = this.state;
     return (
-      <Router>
+      <Router basename='/ui'>
         <Routes>
           <Route path="/" element={
             isAuthenticated ? (
@@ -140,10 +140,12 @@ class App extends React.Component {
           <Route path="/signup" element={<SignupPage onSignUp={this.onSignUp} />} />
           <Route path="/login" element={<AuthPage onLogin={this.onLogin} />} />
         </Routes>
-        {this.state.showError && (
-          <div className="error-banner">{errorMessage}</div>
-        )}
-      </Router>
+        {
+          this.state.showError && (
+            <div className="error-banner">{errorMessage}</div>
+          )
+        }
+      </Router >
     )
   }
 }

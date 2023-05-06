@@ -5,10 +5,9 @@ metadata:
 spec:
   selector:
     app: ui-app
-  type: NodePort
+  type: ClusterIP
   ports:
   - name: ui
     port: 80
     targetPort: 3000
-    nodePort: 31000
     protocol: TCP
