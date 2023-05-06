@@ -3,6 +3,9 @@ kind: Kustomization
 resources:
 - deployment.yaml
 - service.yaml
+- role.yaml
+- sa.yaml
+- rolebinding.yaml
 
 images:
 - name: ui-manager

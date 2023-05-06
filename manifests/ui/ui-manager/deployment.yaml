@@ -12,6 +12,7 @@ spec:
       labels:
         app: ui-manager
     spec:
+      serviceAccountName: ui-manager-sa
       containers:
       - name: ui
         image: ui-manager
