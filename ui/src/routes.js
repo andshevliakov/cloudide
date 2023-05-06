@@ -1,7 +1,7 @@
 const routes = {
-    code_route: '/code',
-    user_route: '/user',
-    token_route: '/token',
+    code_route: '/api/code',
+    user_route: '/api/user',
+    token_route: '/api/token',
 }
 
 export default routes

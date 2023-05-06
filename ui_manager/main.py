@@ -20,8 +20,8 @@ with app.app_context():
 CORS(app)
 
 app.register_blueprint(code_execution)
-app.register_blueprint(token_blueprint, url_prefix='/token')
-app.register_blueprint(user_blueprint, url_prefix='/user')
+app.register_blueprint(token_blueprint, url_prefix='/api/token')
+app.register_blueprint(user_blueprint, url_prefix='/api/user')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cloudide-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - cloudide-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    - uri:
+        prefix: /ui
+    rewrite:
+      uri: /ui
+    route:
+    - destination:
+        host: ui-app-service
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /api
+    route:
+    - destination:
+        host: ui-manager-service
+        port:
+          number: 5000

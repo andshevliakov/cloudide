@@ -6,7 +6,7 @@ MYSQL_USER ?= myuser
 MYSQL_PASSWORD ?= mysqlide
 MYSQL_HOST ?= mysql.mysql-ns.svc.cluster.local
 MANAGER_PORT ?= 5000
-MANAGER_HOST ?= localhost
+MANAGER_HOST ?= ui-manager-service
 REACT_APP_MANAGER_URI ?= http://$(MANAGER_HOST):$(MANAGER_PORT)
 
 build-all:
@@ -50,6 +50,13 @@ deploy-ui:
 undeploy-ui:
 	kustomize build manifests/ui | kubectl delete -f -
 
+deploy-istio:
+	kustomize build manifests/istio | kubectl apply -f -
+
+undeploy-istio:
+	kustomize build manifests/istio | kubectl delete -f -
+
 deploy-all: deploy-mysql deploy-usercontroller deploy-ui
 
 undeploy-all: undeploy-mysql undeploy-usercontroller undeploy-ui
+
