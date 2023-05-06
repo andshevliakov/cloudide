@@ -1,10 +1,7 @@
-import os
 from flask import Flask
-from api.code_execution import code_execution
-from api.token_blueprint import token_blueprint
-from api.user_blueprint import user_blueprint
 from flask_cors import CORS
 from envloader import MANAGER_PORT
+from api.api_blueprint import api_blueprint
 from db_controller.db_controller import db
 from envloader import DB_USER, DB_PASSWD, DB_HOST, DB_NAME
 
@@ -19,9 +16,7 @@ with app.app_context():
 # TODO add restrict polic
 CORS(app)
 
-app.register_blueprint(code_execution)
-app.register_blueprint(token_blueprint, url_prefix='/api/token')
-app.register_blueprint(user_blueprint, url_prefix='/api/user')
+app.register_blueprint(api_blueprint, url_prefix='/api')
 
 
 if __name__ == '__main__':
