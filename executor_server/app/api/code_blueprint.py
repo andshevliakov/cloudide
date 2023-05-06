@@ -12,11 +12,11 @@ def run_code():
     try:
         output = runner.run_code(code_snippet=request_data['code'])
         response = {
-            'output': output
+            'message': output
         }
         return jsonify(response), 200
     except Exception as error:
-        output = error
+        output = str(error)
         response = {
             'message': output
         }
