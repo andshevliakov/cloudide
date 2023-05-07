@@ -1,17 +1,11 @@
 @import url('../assets/styles/variables.css');
 
-.CodeMirror {
-    height: auto;
-}
-
-.CodeMirror-selected {
-    background-color: #ccc !important
-}
-
 div .codemirror-div {
-    position: relative;
-    top: 0;
     right: 0;
     bottom: 0;
-    left: var(--leftbar-width);
+    position: relative;
+    top: calc(var(--topbar-height) + var(--toolbar-height));
+    margin-left: var(--leftbar-width);
+    max-height: calc(100vh - var(--resultbar-height) - var(--topbar-height) - var(--toolbar-height));
+    overflow-y: auto;
 }

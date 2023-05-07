@@ -1,0 +1,26 @@
+@import url('../assets/styles/variables.css');
+
+.execution-result-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--resultbar-height);
+    background-color: #444;
+    border-top: 4px solid #777;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-left: var(--leftbar-width);
+    z-index: 100;
+}
+
+
+.execution-result-bar-content {
+    font-family: monospace;
+    overflow: auto;
+    flex-grow: 1;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: aliceblue;
+}
