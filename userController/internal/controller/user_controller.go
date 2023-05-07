@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -35,6 +36,11 @@ import (
 )
 
 const USER_LABEL = "cloudide.com/executor-app"
+
+const (
+	TARGET_PORT  = 5000
+	SERVICE_PORT = 80
+)
 
 // UserReconciler reconciles a User object
 type UserReconciler struct {
@@ -61,31 +67,58 @@ func (r *UserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		return ctrl.Result{}, err
 	}
 
-	err = r.createExecutorNamespace(ctx, instance)
+	resourceName := createUserResourceService(instance.Spec.Username)
+	resourceNamespace := createUserResourceNamespace(instance.Spec.Username)
+
+	err = r.createExecutorNamespace(ctx, instance, resourceNamespace)
 	if err != nil {
 		logger.Error(err, "Unable to create namespace", "user", instance.Spec.Username)
 		return ctrl.Result{}, err
 	}
 
-	err = r.createExecutorDeployment(ctx, instance)
+	err = r.createExecutorDeployment(ctx, instance, resourceName, resourceNamespace)
 	if err != nil {
 		logger.Error(err, "Unable to create deployment", "user", instance.Spec.Username)
 		return ctrl.Result{}, err
 	}
 
-	err = r.createExecutorService(ctx, instance)
+	endpoint, err := r.createExecutorService(ctx, instance, resourceName, resourceNamespace)
 	if err != nil {
 		logger.Error(err, "Unable to create service", "user", instance.Spec.Username)
+		return ctrl.Result{}, err
+	}
+
+	err = r.updateEndpointStatus(ctx, instance, endpoint)
+	if err != nil {
+		logger.Error(err, "Unable to update status", "user", instance.Spec.Username)
 		return ctrl.Result{}, err
 	}
 
 	return ctrl.Result{}, nil
 }
 
-func (r *UserReconciler) createExecutorService(ctx context.Context, user *cloudidecomv1.User) error {
+func (r *UserReconciler) updateEndpointStatus(ctx context.Context, user *cloudidecomv1.User, endpoint string) error {
 	logger := log.FromContext(ctx)
-	serviceName := createUserResourceService(user.Spec.Username)
-	serviceNamespace := createUserResourceNamespace(user.Spec.Username)
+
+	if user.Status.Error == "" {
+		if user.Status.ExecutorEndpoint == "" {
+			logger.Info("Updating Status", "user", user.Spec.Username)
+			user.Status.ExecutorEndpoint = endpoint
+			err := r.Status().Update(ctx, user)
+			if err != nil {
+				logger.Error(err, "Status update failed", "name", user.Spec.Username)
+				return err
+			}
+		}
+	} else {
+		logger.Info("Status is not updated. Error")
+	}
+
+	return nil
+}
+
+func (r *UserReconciler) createExecutorService(ctx context.Context, user *cloudidecomv1.User, serviceName string, serviceNamespace string) (string, error) {
+	logger := log.FromContext(ctx)
 
 	found := &corev1.Service{}
 	err := r.Get(ctx, types.NamespacedName{Name: serviceName, Namespace: serviceNamespace}, found)
@@ -105,42 +138,41 @@ func (r *UserReconciler) createExecutorService(ctx context.Context, user *cloudi
 					Ports: []corev1.ServicePort{
 						{
 							Name:       "http",
-							Port:       80,
-							TargetPort: intstr.FromInt(8080),
+							Port:       int32(SERVICE_PORT),
+							TargetPort: intstr.FromInt(TARGET_PORT),
 						},
 					},
 				},
 			}
 
 			if err := controllerutil.SetControllerReference(user, service, r.Scheme); err != nil {
-				return err
+				return "", err
 			}
 
 			err = r.Create(ctx, service)
 			if err != nil {
 				logger.Error(err, "Service creation failed", "user", user.Spec.Username)
-				return err
+				return "", err
 			}
 		} else {
-			return err
+			return "", err
 		}
 	}
-
-	return nil
+	endpoint := fmt.Sprintf("%s.%s.svc.cluster.local:%d", serviceName, serviceNamespace, SERVICE_PORT)
+	return endpoint, nil
 }
 
-func (r *UserReconciler) createExecutorNamespace(ctx context.Context, user *cloudidecomv1.User) error {
+func (r *UserReconciler) createExecutorNamespace(ctx context.Context, user *cloudidecomv1.User, namespace string) error {
 	logger := log.FromContext(ctx)
-	namespaceName := createUserResourceNamespace(user.Spec.Username)
 
 	found := &corev1.Namespace{}
-	err := r.Get(ctx, types.NamespacedName{Name: namespaceName}, found)
+	err := r.Get(ctx, types.NamespacedName{Name: namespace}, found)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
 			logger.Info("Creating Namespace", "user", user.Spec.Username)
 			userNamespace := &corev1.Namespace{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: namespaceName,
+					Name: namespace,
 				},
 			}
 
@@ -160,10 +192,8 @@ func (r *UserReconciler) createExecutorNamespace(ctx context.Context, user *clou
 	return nil
 }
 
-func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *cloudidecomv1.User) error {
+func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *cloudidecomv1.User, deployName string, deployNamespace string) error {
 	logger := log.FromContext(ctx)
-	deployName := createUserResourceName(user.Spec.Username)
-	deployNamespace := createUserResourceNamespace(user.Spec.Username)
 
 	found := &appsv1.Deployment{}
 	err := r.Get(ctx, types.NamespacedName{Name: deployName, Namespace: deployNamespace}, found)
@@ -194,6 +224,11 @@ func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *clo
 								{
 									Name:  "executor",
 									Image: "andriisoft/cloudide-executor:latest",
+									Ports: []corev1.ContainerPort{
+										{
+											ContainerPort: TARGET_PORT,
+										},
+									},
 								},
 							},
 						},

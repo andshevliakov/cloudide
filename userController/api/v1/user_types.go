@@ -22,13 +22,14 @@ import (
 
 // UserSpec defines the desired state of User
 type UserSpec struct {
-	Name     string `json:"name,omitempty"`
-	Username string `json:"username,omitempty"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
 }
 
 // UserStatus defines the observed state of User
 type UserStatus struct {
-	Error string `json:"error,omitempty"`
+	Error            string `json:"error,omitempty"`
+	ExecutorEndpoint string `json:"executorEndpoint,omitempty"`
 }
 
 //+kubebuilder:object:root=true
@@ -40,7 +41,7 @@ type User struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   UserSpec   `json:"spec,omitempty"`
+	Spec   UserSpec   `json:"spec"`
 	Status UserStatus `json:"status,omitempty"`
 }
 

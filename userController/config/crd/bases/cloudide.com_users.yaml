@@ -39,13 +39,20 @@ spec:
                 type: string
               username:
                 type: string
+            required:
+            - name
+            - username
             type: object
           status:
             description: UserStatus defines the observed state of User
             properties:
               error:
                 type: string
+              executorEndpoint:
+                type: string
             type: object
+        required:
+        - spec
         type: object
     served: true
     storage: true
