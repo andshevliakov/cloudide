@@ -20,6 +20,8 @@ class App extends React.Component {
       code: '',
       errorMessage: '',
       showError: '',
+      result: '',
+      resultExists: false,
     };
   }
 
@@ -109,7 +111,9 @@ class App extends React.Component {
   };
 
   handleRun = async () => {
-    // Chande to executorUrl
+    this.setState({ result: 'test' })
+    this.setState({ resultExists: true })
+    // Chande to executorUrlh
     const url = managerUrl + routes.code_route + '/run'
     try {
       const response = await axios.post(url, {
@@ -123,15 +127,15 @@ class App extends React.Component {
   };
 
   render() {
-    const { isAuthenticated, errorMessage } = this.state;
+    const { isAuthenticated, errorMessage, result, resultExists } = this.state;
     return (
       <Router basename='/ui'>
         <Routes>
           <Route path="/" element={
             isAuthenticated ? (
               <>
-                <Bars onRun={this.handleRun} />
-                <Cell initialValue={this.state.code} updateCode={this.updateCode} />
+                <Bars onRun={this.handleRun} result={result} />
+                <Cell initialValue={this.state.code} updateCode={this.updateCode} resultExists={resultExists} />
               </>
             ) : (
               <AuthPage onLogin={this.onLogin} />
