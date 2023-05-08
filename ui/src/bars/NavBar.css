@@ -1,5 +1,11 @@
 @import url('../assets/styles/variables.css');
 
+.navbar li {
+  display: inline-block;
+  margin-right: 20px;
+  font-size: 14px;
+}
+
 .navbar {
   position: fixed;
   top: 0;
@@ -12,10 +18,13 @@
   z-index: 100;
 }
 
-.navbar li {
-  display: inline-block;
-  margin-right: 20px;
-  font-size: 14px;
+div .user-navbar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #eee;
+  font-weight: bold;
+  right: 30px;
 }
 
 .navbar li:first-child {

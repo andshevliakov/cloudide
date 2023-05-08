@@ -11,7 +11,7 @@
     height: var(--toolbar-height);
     padding: 10px;
     font-weight: bold;
-    z-index: 100;
+    z-index: 90;
 }
 
 
