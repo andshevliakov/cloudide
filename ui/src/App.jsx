@@ -111,17 +111,18 @@ class App extends React.Component {
   };
 
   handleRun = async () => {
-    this.setState({ result: 'test' })
-    this.setState({ resultExists: true })
-    // Chande to executorUrlh
     const url = managerUrl + routes.code_route + '/run'
     try {
       const response = await axios.post(url, {
         'code': this.state.code
       })
-      console.log(response)
+      this.setState({ result: response.data })
+      this.setState({ resultExists: true })
+      console.log(response.status)
     } catch (error) {
       console.error(`${error.response.status} ${error.response.data}`);
+      this.setState({ result: error.response.data })
+      this.setState({ resultExists: true })
     }
 
   };
