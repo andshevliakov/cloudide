@@ -17,3 +17,9 @@ rules:
   - users
   verbs:
   - create
+- apiGroups:
+  - cloudide.com
+  resources:
+  - users/status
+  verbs:
+  - get

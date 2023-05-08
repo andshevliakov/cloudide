@@ -29,3 +29,13 @@ class K8SController:
         self._custom_api.create_cluster_custom_object(
             self._crd.spec.group, self._crd.spec.versions[0].name,
             self._crd.spec.names.plural, body)
+
+    def get_endpoint_url(self, username: str) -> str:
+        user_status = self._custom_api.get_cluster_custom_object_status(
+            group=self._crd.spec.group,
+            version=self._crd.spec.versions[0].name,
+            plural=self._crd.spec.names.plural,
+            name=username
+        )
+        print(user_status)
+        return user_status['executorEndpoint']

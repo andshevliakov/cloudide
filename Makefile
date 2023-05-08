@@ -7,7 +7,7 @@ MYSQL_PASSWORD ?= mysqlide
 MYSQL_HOST ?= mysql.mysql-ns.svc.cluster.local
 MANAGER_PORT ?= 5000
 MANAGER_HOST ?= ui-manager-service
-REACT_APP_MANAGER_URI ?= http://$(MANAGER_HOST):$(MANAGER_PORT)
+REACT_APP_MANAGER_URI ?= 
 
 build-all:
 	make -C ui_manager build-image
