@@ -43,13 +43,13 @@ class App extends React.Component {
   verifyUser = async (username, password) => {
     const url = managerUrl + routes.user_route + '/verify';
     try {
-      await axios.get(url, {
+      const response = await axios.get(url, {
         params: {
           username: username,
           password: SHA256(password).toString()
         }
       });
-      return true;
+      return response;
     } catch (error) {
       if (error.response && error.response.status === 404) {
         this.setState({ errorMessage: 'Invalid username or password', showError: true });
@@ -59,7 +59,7 @@ class App extends React.Component {
       } else {
         console.log(error.response.status + error.response.data);
       }
-      return false;
+      return error.response;
     }
   };
 
@@ -90,14 +90,15 @@ class App extends React.Component {
   };
 
   onLogin = async ({ username, password }) => {
-    const verified = await this.verifyUser(username, password);
-    if (verified) {
+    const user = await this.verifyUser(username, password);
+    if ('username' in user.data) {
       try {
         const response = await axios.get(managerUrl + routes.token_route + '/generate', {
           params: {
             username: username,
           }
         });
+        localStorage.setItem('user', user.data.username)
         localStorage.setItem('auth-token', response.data.token);
         this.setState({ isAuthenticated: true });
       } catch (error) {
@@ -108,6 +109,12 @@ class App extends React.Component {
 
   updateCode = (newCode) => {
     this.setState({ code: newCode });
+  };
+
+  onLogout = () => {
+    localStorage.removeItem('user')
+    localStorage.removeItem('auth-token')
+    this.setState({ isAuthenticated: false })
   };
 
   handleRun = async () => {
@@ -135,7 +142,7 @@ class App extends React.Component {
           <Route path="/" element={
             isAuthenticated ? (
               <>
-                <Bars onRun={this.handleRun} result={result} />
+                <Bars onRun={this.handleRun} result={result} user={localStorage.getItem('user')} onLogout={this.onLogout} />
                 <Cell initialValue={this.state.code} updateCode={this.updateCode} resultExists={resultExists} />
               </>
             ) : (
