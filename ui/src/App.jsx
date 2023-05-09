@@ -123,16 +123,28 @@ class App extends React.Component {
       const response = await axios.post(url, {
         'code': this.state.code
       })
-      this.setState({ result: response.data })
+      this.setState({ result: response.data.message.toString() })
       this.setState({ resultExists: true })
-      console.log(response.status)
     } catch (error) {
       console.error(`${error.response.status} ${error.response.data}`);
-      this.setState({ result: error.response.data })
+      this.setState({ result: error.response.data.message.toString() })
       this.setState({ resultExists: true })
     }
 
   };
+
+  installPackage = async (searchTerm) => {
+    const url = managerUrl + routes.code_route + '/install'
+    try {
+      const response = await axios.post(url, {
+        'packageName': searchTerm
+      })
+      return response
+    } catch (error) {
+      console.error(`${error.response.status} ${error.response.data}`);
+      return error.response
+    }
+  }
 
   render() {
     const { isAuthenticated, errorMessage, result, resultExists } = this.state;
@@ -142,7 +154,7 @@ class App extends React.Component {
           <Route path="/" element={
             isAuthenticated ? (
               <>
-                <Bars onRun={this.handleRun} result={result} user={localStorage.getItem('user')} onLogout={this.onLogout} />
+                <Bars onRun={this.handleRun} result={result} user={localStorage.getItem('user')} onLogout={this.onLogout} installPackage={this.installPackage} />
                 <Cell initialValue={this.state.code} updateCode={this.updateCode} resultExists={resultExists} />
               </>
             ) : (

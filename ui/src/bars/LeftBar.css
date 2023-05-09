@@ -11,24 +11,41 @@
   z-index: 100;
 }
 
-ul {
+.left-bar-menu {
+  position: fixed;
+  top: calc(var(--topbar-height) + var(--toolbar-height));
+  left: var(--leftbar-width);
+  width: 20%;
+  height: 20%;
+  background-color: #777777b2;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.left-bar-menu input[type="text"] {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.left-bar ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-li {
+.left-bar li {
   margin-bottom: 10px;
 }
 
-a {
-  display: flex;
-  height: 30px;
-  justify-content: center;
-  text-decoration: none;
+.left-bar button {
+  margin-top: var(--toolbar-height);
 }
 
-img {
+.left-bar img {
   display: inline-block;
   height: 100%;
   vertical-align: middle;
