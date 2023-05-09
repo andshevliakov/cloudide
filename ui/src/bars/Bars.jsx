@@ -5,12 +5,12 @@ import ToolBar from "./ToolBar";
 import ResultBar from "./ResultBar";
 
 function Bars(props) {
-  const { onRun, result, user, onLogout } = props;
+  const { onRun, result, user, onLogout, installPackage } = props;
 
   return (
     <React.Fragment>
       <Navbar user={user} onLogout={onLogout} />
-      <Leftbar />
+      <Leftbar installPackage={installPackage} />
       <ToolBar onRun={onRun} />
       <ResultBar result={result} />
     </React.Fragment>

@@ -37,5 +37,8 @@ class K8SController:
             plural=self._crd.spec.names.plural,
             name=username
         )
-        print(user_status)
-        return user_status['executorEndpoint']
+        if 'status' in user_status:
+            if 'executorEndpoint' in user_status['status']:
+                return user_status['status']['executorEndpoint']
+
+        return ''

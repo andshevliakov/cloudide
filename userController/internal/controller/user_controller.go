@@ -173,6 +173,9 @@ func (r *UserReconciler) createExecutorNamespace(ctx context.Context, user *clou
 			userNamespace := &corev1.Namespace{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: namespace,
+					Labels: map[string]string{
+						"istio-injection": "enabled",
+					},
 				},
 			}
 

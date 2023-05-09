@@ -21,3 +21,22 @@ def run_code():
             'message': output
         }
         return jsonify(response), 500
+
+
+@code_blueprint.route('/install', methods=['POST'])
+def install_package():
+    request_data = request.get_json()
+    output = ''
+    try:
+        output = runner.install_package(
+            package_name=request_data['packageName'])
+        response = {
+            'message': output
+        }
+        return jsonify(response), 200
+    except Exception as error:
+        output = str(error)
+        response = {
+            'message': output
+        }
+        return jsonify(response), 500
