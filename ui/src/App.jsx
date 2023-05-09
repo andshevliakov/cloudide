@@ -6,10 +6,15 @@ import './App.css';
 import { SHA256 } from 'crypto-js';
 import routes from './routes';
 import managerUrl from './envloader';
-import { verifyToken } from './tokenManager';
 import SignupPage from './authPages/SignupPage';
 import AuthPage from './authPages/AuthPage';
 import MainCanvas from './mainCanvas/MainCanvas';
+import User from './entities/user';
+import UserManager from './api/userManager/userManager';
+import TokenManager from './api/tokenManager/tokenManager';
+
+const userManager = new UserManager()
+const tokenManager = new TokenManager()
 
 class App extends React.Component {
   constructor(props) {
@@ -21,20 +26,20 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.verifyExistingToken();
-  }
+  // componentDidMount() {
+  //   this.verifyExistingToken();
+  // }
 
-  verifyExistingToken = async () => {
-    if ('auth-token' in localStorage) {
-      const token = localStorage.getItem('auth-token');
-      if (await verifyToken(token)) {
-        this.setState({ isAuthenticated: true });
-      } else {
-        localStorage.removeItem('auth-token');
-      }
-    }
-  };
+  // verifyExistingToken = async () => {
+  //   if ('auth-token' in localStorage) {
+  //     const token = localStorage.getItem('auth-token');
+  //     if (await verifyToken(token)) {
+  //       this.setState({ isAuthenticated: true });
+  //     } else {
+  //       localStorage.removeItem('auth-token');
+  //     }
+  //   }
+  // };
 
   verifyUser = async (username, password) => {
     const url = managerUrl + routes.user_route + '/verify';
@@ -86,22 +91,26 @@ class App extends React.Component {
   };
 
   onLogin = async ({ username, password }) => {
-    const user = await this.verifyUser(username, password);
-    if ('username' in user.data) {
+    const user = new User('', username, password);
+    const response = await userManager.verifyUser(user);
+    if ('username' in response.data) {
       try {
-        const response = await axios.get(managerUrl + routes.token_route + '/generate', {
-          params: {
-            username: username,
-          }
-        });
-        localStorage.setItem('user', user.data.username)
+        const response = await tokenManager.generateToken(user.username);
+        localStorage.setItem('user', user.username)
         localStorage.setItem('auth-token', response.data.token);
-        this.setState({ isAuthenticated: true });
       } catch (error) {
-        console.error(`${error.response.status} ${error.response.data}`);
+        if (error.response && error.response.status === 404) {
+          this.setState({ errorMessage: 'Invalid username or password', showError: true });
+          setTimeout(() => {
+            this.setState({ showError: false });
+          }, 5000);
+        } else {
+          console.log(error.response.status + error.response.data);
+        }
       }
     }
   };
+
 
   render() {
     const { errorMessage } = this.state;

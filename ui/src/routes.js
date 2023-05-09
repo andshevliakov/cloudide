@@ -8,6 +8,14 @@ const packageRoutes = () => {
     return version1ServerRoutes + '/package';
 }
 
+const userRoutes = () => {
+    return version1ServerRoutes + '/user'
+}
+
+const tokenRoutes = () => {
+    return version1ServerRoutes + '/token'
+}
+
 const routes = {
     codeRoute: {
         runCode: codeRoutes() + '/run',
@@ -15,8 +23,13 @@ const routes = {
     packageRoute: {
         installPackage: packageRoutes() + '/install',
     },
-    user_route: version1ServerRoutes + '/user',
-    token_route: version1ServerRoutes + '/token',
+    userRoute: {
+        verifyUser: userRoutes() + '/verify',
+    },
+    tokenRoute: {
+        generateToken: tokenRoutes() + '/generate',
+        verifyToken: tokenRoutes() + '/verify',
+    },
 }
 
 export default routes

@@ -9,7 +9,7 @@ const SignupPage = ({ onSignUp }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleNameChange = (event) => {
         setName(event.target.value);
@@ -34,7 +34,7 @@ const SignupPage = ({ onSignUp }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         onSignUp({ name, surname, username, password });
-        navigate('/login')
+        navigate('/login');
     };
 
     const isFormValid = () => {
@@ -52,33 +52,69 @@ const SignupPage = ({ onSignUp }) => {
             <div className="signup-page">
                 <Container>
                     <Row>
-                        <Col md={{ span: 6, offset: 3 }} lg={{ span: 4, offset: 4 }}>
+                        <Col
+                            md={{ span: 6, offset: 3 }}
+                            lg={{ span: 4, offset: 4 }}
+                        >
                             <Form onSubmit={handleSubmit}>
                                 <Form.Group controlId="formBasicName">
-                                    <Form.Control type="text" placeholder="Name" value={name} onChange={handleNameChange} />
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Name"
+                                        value={name}
+                                        onChange={handleNameChange}
+                                    />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicSurname">
-                                    <Form.Control type="text" placeholder="Surname" value={surname} onChange={handleSurnameChange} />
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Surname"
+                                        value={surname}
+                                        onChange={handleSurnameChange}
+                                    />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicUsername">
-                                    <Form.Control type="text" placeholder="Username" value={username} onChange={handleUsernameChange} />
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Username"
+                                        value={username}
+                                        onChange={handleUsernameChange}
+                                    />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicPassword">
-                                    <Form.Control type="password" placeholder="Password" value={password} onChange={handlePasswordChange} />
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={handlePasswordChange}
+                                    />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicConfirmPassword">
-                                    <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={handleConfirmPasswordChange} />
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Confirm Password"
+                                        value={confirmPassword}
+                                        onChange={handleConfirmPasswordChange}
+                                    />
                                 </Form.Group>
 
-                                <Button variant="primary" type="submit" className="btn-block" disabled={!isFormValid()}>
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                    className="btn-block"
+                                    disabled={!isFormValid()}
+                                >
                                     Sign Up
                                 </Button>
                                 <div className="auth-page__signup">
-                                    Already have an account? <Link to='/login'>Log in</Link>
+                                    Already have an account?
+                                    <Link to='/login'>
+                                        Log in
+                                    </Link>
                                 </div>
                             </Form>
                         </Col>
