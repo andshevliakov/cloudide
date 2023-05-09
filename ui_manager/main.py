@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 from envloader import MANAGER_PORT
-from api.api_blueprint import api_blueprint
-from db_controller.db_controller import db
+from api.version_blueprint import version_blueprint
+from user_module.user_controller import db
 from envloader import DB_USER, DB_PASSWD, DB_HOST, DB_NAME
 
 app = Flask(__name__)
@@ -16,7 +16,7 @@ with app.app_context():
 # TODO add restrict polic
 CORS(app)
 
-app.register_blueprint(api_blueprint, url_prefix='/api')
+app.register_blueprint(version_blueprint, url_prefix='/api')
 
 
 if __name__ == '__main__':

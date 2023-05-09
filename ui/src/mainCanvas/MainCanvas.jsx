@@ -26,7 +26,6 @@ const MainCanvas = () => {
             <Bars
                 handleRun={handleRun}
                 runResult={runResult}
-                user={localStorage.getItem('user')}
             />
             <Cell
                 initialValue={code}

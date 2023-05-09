@@ -1,8 +1,9 @@
 import { SHA256 } from 'crypto-js';
 
 class User{
-    constructor(name,username,password) {
+    constructor(name,surname,username,password) {
         this.name = name;
+        this.surname = surname;
         this.username = username;
         this.password = this.hashPassword(password);
     };

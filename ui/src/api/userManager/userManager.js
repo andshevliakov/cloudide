@@ -18,6 +18,22 @@ class UserManager {
             return error.response;
         }
     };
+
+    createUser = async (user) => {
+    const url = managerUrl + routes.userRoute.createUser;
+    try {
+      const response = await axios.post(url, {
+        'name': user.name,
+        'surname': user.surname,
+        'username': user.username,
+        'password': user.password,
+      });
+      return response
+    } catch (error) {
+      console.error(`${error.response.status} ${error.response.data}`);
+      return error.response
+    }
+  };
 }
 
 export default UserManager;

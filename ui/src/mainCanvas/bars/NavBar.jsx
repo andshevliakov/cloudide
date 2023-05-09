@@ -1,11 +1,9 @@
 import React from "react";
 import "./NavBar.css";
 
-const Navbar = (props) => {
-  const { user } = props;
+const Navbar = () => {
 
   const handleLogoutClick = () => {
-    localStorage.removeItem('user');
     localStorage.removeItem('auth-token');
   };
 
@@ -24,7 +22,7 @@ const Navbar = (props) => {
         </ul>
         <div className="user-navbar">
           <button onClick={handleLogoutClick}>
-            logout({user})
+            logout(TODO)
           </button>
         </div>
       </nav>
