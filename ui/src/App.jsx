@@ -3,25 +3,21 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
-import Cell from './cell/Cell';
-import Bars from './bars/Bars';
-import AuthPage from './AuthPage';
 import { SHA256 } from 'crypto-js';
 import routes from './routes';
 import managerUrl from './envloader';
 import { verifyToken } from './tokenManager';
-import SignupPage from './SignupPage';
+import SignupPage from './authPages/SignupPage';
+import AuthPage from './authPages/AuthPage';
+import MainCanvas from './mainCanvas/MainCanvas';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isAuthenticated: false,
-      code: '',
       errorMessage: '',
       showError: '',
-      result: '',
-      resultExists: false,
     };
   }
 
@@ -107,62 +103,20 @@ class App extends React.Component {
     }
   };
 
-  updateCode = (newCode) => {
-    this.setState({ code: newCode });
-  };
-
-  onLogout = () => {
-    localStorage.removeItem('user')
-    localStorage.removeItem('auth-token')
-    this.setState({ isAuthenticated: false })
-  };
-
-  handleRun = async () => {
-    const url = managerUrl + routes.code_route + '/run'
-    try {
-      const response = await axios.post(url, {
-        'code': this.state.code
-      })
-      this.setState({ result: response.data.message.toString() })
-      this.setState({ resultExists: true })
-    } catch (error) {
-      console.error(`${error.response.status} ${error.response.data}`);
-      this.setState({ result: error.response.data.message.toString() })
-      this.setState({ resultExists: true })
-    }
-
-  };
-
-  installPackage = async (searchTerm) => {
-    const url = managerUrl + routes.code_route + '/install'
-    try {
-      const response = await axios.post(url, {
-        'packageName': searchTerm
-      })
-      return response
-    } catch (error) {
-      console.error(`${error.response.status} ${error.response.data}`);
-      return error.response
-    }
-  }
-
   render() {
-    const { isAuthenticated, errorMessage, result, resultExists } = this.state;
+    const { errorMessage } = this.state;
     return (
-      <Router basename='/ui'>
+      <Router basename='/ide'>
         <Routes>
           <Route path="/" element={
-            isAuthenticated ? (
-              <>
-                <Bars onRun={this.handleRun} result={result} user={localStorage.getItem('user')} onLogout={this.onLogout} installPackage={this.installPackage} />
-                <Cell initialValue={this.state.code} updateCode={this.updateCode} resultExists={resultExists} />
-              </>
-            ) : (
-              <AuthPage onLogin={this.onLogin} />
-            )
+            <MainCanvas />
           } />
-          <Route path="/signup" element={<SignupPage onSignUp={this.onSignUp} />} />
-          <Route path="/login" element={<AuthPage onLogin={this.onLogin} />} />
+          <Route path="/signup" element={
+            <SignupPage onSignUp={this.onSignUp} />
+          } />
+          <Route path="/login" element={
+            <AuthPage onLogin={this.onLogin} />
+          } />
         </Routes>
         {
           this.state.showError && (
