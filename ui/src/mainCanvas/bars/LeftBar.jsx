@@ -1,14 +1,18 @@
-import "./LeftBar.css"
-import '../assets/styles/variables.css'
-import packageslogo from "../assets/packages.png"
-import { useState } from "react"
+import "./LeftBar.css";
+import PropTypes from "prop-types";
+import '../../assets/styles/variables.css';
+import packageslogo from "../../assets/packages.png";
+import { useState } from "react";
+import PackageManager from "../../api/packageManager/packageManager";
+
+const packageManager = new PackageManager();
 
 const leftbarStyle = {
     width: 'calc(var(--leftbar-width) - 10px)',
     height: 'auto',
 }
 
-function Leftbar(props) {
+const LeftBar = () => {
 
     const [showMenu, setShowMenu] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,12 +20,12 @@ function Leftbar(props) {
 
     const handleKeyDown = async (event) => {
         if (event.keyCode === 13) {
-            const response = await props.installPackage(searchTerm);
+            const response = await packageManager.installPackage(searchTerm);
             setInstallationResult(response.data.message);
         }
     };
 
-    const handleChange = (event) => {
+    const handleChangeInputField = (event) => {
         setSearchTerm(event.target.value);
     };
 
@@ -35,7 +39,11 @@ function Leftbar(props) {
                 <ul>
                     <li>
                         <button onClick={toggleMenu}>
-                            <img style={leftbarStyle} src={packageslogo} alt="Packages" />
+                            <img
+                                style={leftbarStyle}
+                                src={packageslogo}
+                                alt="Packages"
+                            />
                         </button>
                         {showMenu && (
                             <div className="left-bar-menu">
@@ -43,7 +51,7 @@ function Leftbar(props) {
                                     type="text"
                                     placeholder="Package name"
                                     value={searchTerm}
-                                    onChange={handleChange}
+                                    onChange={handleChangeInputField}
                                     onKeyDown={handleKeyDown}
                                 />
                                 Search repository: conda-forge
@@ -54,7 +62,11 @@ function Leftbar(props) {
                 </ul>
             </nav>
         </div>
-    )
+    );
 }
 
-export default Leftbar
+LeftBar.propTypes = {
+    installationResult: PropTypes.string,
+};
+
+export default LeftBar;
