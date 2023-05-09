@@ -226,7 +226,7 @@ func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *clo
 							Containers: []corev1.Container{
 								{
 									Name:  "executor",
-									Image: "andriisoft/cloudide-executor:latest",
+									Image: "andriisoft/cloudide-executor:release-0.1",
 									Ports: []corev1.ContainerPort{
 										{
 											ContainerPort: TARGET_PORT,

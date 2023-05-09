@@ -10,4 +10,4 @@ resources:
 images:
 - name: ui-manager
   newName: andriisoft/cloudide-ui-manager
-  newTag: latest
+  newTag: release-0.1
