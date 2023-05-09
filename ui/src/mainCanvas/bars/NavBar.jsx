@@ -2,10 +2,11 @@ import React from "react";
 import "./NavBar.css";
 
 const Navbar = (props) => {
-  const { user, onLogout } = props;
+  const { user } = props;
 
   const handleLogoutClick = () => {
-    onLogout && onLogout();
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth-token');
   };
 
   return (
@@ -13,14 +14,18 @@ const Navbar = (props) => {
       <nav className="navbar">
         <ul>
           <li>
-            <a href="#">Settings</a>
+            <a href="/#">Settings</a>
           </li>
           <li>
-            <a href="#">Help</a>
+            <a href="https://github.com/andshevliakov/cloudide/blob/master/README.md">
+              Help
+            </a>
           </li>
         </ul>
         <div className="user-navbar">
-          <button onClick={onLogout}>logout({user})</button>
+          <button onClick={handleLogoutClick}>
+            logout({user})
+          </button>
         </div>
       </nav>
     </div >

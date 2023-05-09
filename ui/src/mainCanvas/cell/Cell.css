@@ -1,6 +1,6 @@
-@import url('../assets/styles/variables.css');
+@import url('../../assets/styles/variables.css');
 
-div .codemirror-div {
+.codemirror-div {
     right: 0;
     bottom: 0;
     position: relative;
