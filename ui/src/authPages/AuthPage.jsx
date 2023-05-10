@@ -1,106 +1,91 @@
 import React, { useState } from 'react';
-import './AuthPage.css';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router';
 import User from '../entities/user';
 import UserManager from '../api/userManager/userManager';
 import TokenManager from '../api/tokenManager/tokenManager';
+import LoginPage from './LoginPage';
+import SignupPage from './SignupPage';
+import Banner from '../banners/Banner';
+import BannerState from '../entities/banner';
 
 const userManager = new UserManager()
 const tokenManager = new TokenManager()
 
 const AuthPage = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    const [bannerState, setBannerState] = useState('');
+    const [bannerMessage, setBannerMessage] = useState('');
+    const [showBanner, setShowBanner] = useState(false);
+    const location = useLocation();
+
+    const isLoginPage = location.pathname === '/login';
+    const isSignupPage = location.pathname === '/signup';
+
+    useEffect(() => {
+        let bannerTimer;
+        if (showBanner) {
+            bannerTimer = setTimeout(() => {
+                setShowBanner(false);
+            }, 5000);
+        }
+        return () => clearTimeout(bannerTimer);
+    }, [showBanner]);
 
     const onLogin = async ({ username, password }) => {
         const user = new User('', '', username, password);
         const response = await userManager.verifyUser(user);
-        if ('username' in response.data) {
-            try {
-                const response = await tokenManager.generateToken(user.username);
+        if (response.status === 200) {
+            const response = await tokenManager.generateToken(user.username);
+            if (response.status === 200) {
                 localStorage.setItem('auth-token', response.data.token);
-            } catch (error) {
-                // if (error.response && error.response.status === 404) {
-                //     this.setState({ errorMessage: 'Invalid username or password', showError: true });
-                //     setTimeout(() => {
-                //         this.setState({ showError: false });
-                //     }, 5000);
-                // } else {
-                //     console.log(error.response.status + error.response.data);
-                // }
+            } else if (response.status >= 400) {
+                setBannerState(BannerState.Error);
+                if (response.data) {
+                    setBannerMessage(response.data.message.toString());
+                } else {
+                    setBannerMessage('Internal Server Error');
+                }
+                setShowBanner(true);
             }
+        } else if (response.status >= 400) {
+            setBannerState(BannerState.Error);
+            if (response.data) {
+                setBannerMessage(response.data.message.toString());
+            } else {
+                setBannerMessage('Internal Server Error');
+            }
+            setShowBanner(true);
         }
     };
 
-    const handleUsernameChange = (event) => {
-        setUsername(event.target.value);
+    const onSignUp = async ({ name, surname, username, password }) => {
+        const user = new User(name, surname, username, password);
+        const response = await userManager.createUser(user);
+        if (response.status === 201) {
+            setBannerState(BannerState.Info);
+            setBannerMessage(response.data.message.toString());
+            setShowBanner(true);
+        } else if (response.status >= 400) {
+            setBannerState(BannerState.Error);
+            if (response.data) {
+                setBannerMessage(response.data.message.toString());
+            } else {
+                setBannerMessage('Internal Server Error');
+            }
+            setShowBanner(true);
+        }
     };
-
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        onLogin({ username, password });
-        navigate('/');
-    };
-
-    const isFormValid = () => {
-        return username !== '' && password !== '';
-    }
 
     return (
-        <div className='container'>
-            <div className="auth-page">
-                <Container>
-                    <Row>
-                        <Col
-                            md={{ span: 6, offset: 3 }}
-                            lg={{ span: 4, offset: 4 }}
-                        >
-                            <Form onSubmit={handleSubmit}>
-                                <Form.Group controlId="formBasicUsername">
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Username"
-                                        value={username}
-                                        onChange={handleUsernameChange}
-                                    />
-                                </Form.Group>
-
-                                <Form.Group controlId="formBasicPassword">
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Password"
-                                        value={password}
-                                        onChange={handlePasswordChange}
-                                    />
-                                </Form.Group>
-
-                                <Button
-                                    variant="primary"
-                                    type="submit"
-                                    className="btn-block"
-                                    disabled={!isFormValid()}
-                                >
-                                    Log In
-                                </Button>
-                                <div className="auth-page__signup">
-                                    Don't have an account?
-                                    <Link to="/signup">
-                                        Sign up
-                                    </Link>
-                                </div>
-                            </Form>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+        <div>
+            {isSignupPage && <SignupPage onSignUp={onSignUp} />}
+            {isLoginPage && <LoginPage onLogin={onLogin} />}
+            {showBanner && (
+                <Banner state={bannerState} message={bannerMessage} />
+            )}
         </div>
     );
+
 };
 
 export default AuthPage;

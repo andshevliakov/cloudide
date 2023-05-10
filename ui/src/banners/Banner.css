@@ -11,3 +11,31 @@
     text-align: center;
     z-index: 100;
 }
+
+.info-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #27aa0380;
+    color: #FFF;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    z-index: 100;
+}
+
+.warning-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #fffb00c3;
+    color: #FFF;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    z-index: 100;
+}

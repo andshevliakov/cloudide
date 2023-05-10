@@ -1,24 +1,13 @@
 import React, { useState } from 'react';
+import './LoginPage.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import './SignupPage.css';
 
-const SignupPage = ({ onSignUp }) => {
-    const [name, setName] = useState('');
-    const [surname, setSurname] = useState('');
+const LoginPage = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
 
-
-    const handleNameChange = (event) => {
-        setName(event.target.value);
-    };
-
-    const handleSurnameChange = (event) => {
-        setSurname(event.target.value);
-    };
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -28,30 +17,18 @@ const SignupPage = ({ onSignUp }) => {
         setPassword(event.target.value);
     };
 
-    const handleConfirmPasswordChange = (event) => {
-        setConfirmPassword(event.target.value);
-    };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(onSignUp)
-        await onSignUp({ name, surname, username, password });
-        navigate('/login')
+        await onLogin({ username, password });
     };
 
     const isFormValid = () => {
-        return (
-            name !== '' &&
-            surname !== '' &&
-            username !== '' &&
-            password !== '' &&
-            password === confirmPassword
-        );
-    };
+        return username !== '' && password !== '';
+    }
 
     return (
         <div className='container'>
-            <div className="signup-page">
+            <div className="auth-page">
                 <Container>
                     <Row>
                         <Col
@@ -59,24 +36,6 @@ const SignupPage = ({ onSignUp }) => {
                             lg={{ span: 4, offset: 4 }}
                         >
                             <Form onSubmit={handleSubmit}>
-                                <Form.Group controlId="formBasicName">
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Name"
-                                        value={name}
-                                        onChange={handleNameChange}
-                                    />
-                                </Form.Group>
-
-                                <Form.Group controlId="formBasicSurname">
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Surname"
-                                        value={surname}
-                                        onChange={handleSurnameChange}
-                                    />
-                                </Form.Group>
-
                                 <Form.Group controlId="formBasicUsername">
                                     <Form.Control
                                         type="text"
@@ -95,27 +54,18 @@ const SignupPage = ({ onSignUp }) => {
                                     />
                                 </Form.Group>
 
-                                <Form.Group controlId="formBasicConfirmPassword">
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Confirm Password"
-                                        value={confirmPassword}
-                                        onChange={handleConfirmPasswordChange}
-                                    />
-                                </Form.Group>
-
                                 <Button
                                     variant="primary"
                                     type="submit"
                                     className="btn-block"
                                     disabled={!isFormValid()}
                                 >
-                                    Sign Up
+                                    Log In
                                 </Button>
                                 <div className="auth-page__signup">
-                                    Already have an account?
-                                    <Link to='/login'>
-                                        Log in
+                                    Don't have an account?<br />
+                                    <Link to="/signup">
+                                        Sign up
                                     </Link>
                                 </div>
                             </Form>
@@ -123,8 +73,9 @@ const SignupPage = ({ onSignUp }) => {
                     </Row>
                 </Container>
             </div>
-        </div>
+        </div >
+
     );
 };
 
-export default SignupPage;
+export default LoginPage;
