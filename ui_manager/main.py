@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from envloader import MANAGER_PORT
 from api.version_blueprint import version_blueprint
-from user_module.user_controller import db
+from modules.user_module.user_controller import db
 from envloader import DB_USER, DB_PASSWD, DB_HOST, DB_NAME
 
 app = Flask(__name__)

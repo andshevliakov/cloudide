@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from user_module.user_controller import UserController
+from modules.user_module.user_controller import UserController
+
 
 user_blueprint = Blueprint('user_blueprint', __name__)
 

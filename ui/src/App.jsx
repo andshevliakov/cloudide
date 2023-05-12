@@ -7,29 +7,6 @@ import AuthPage from './authPages/AuthPage';
 import MainCanvas from './mainCanvas/MainCanvas';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isAuthenticated: false,
-      errorMessage: '',
-      showError: '',
-    };
-  }
-
-  // componentDidMount() {
-  //   this.verifyExistingToken();
-  // }
-
-  // verifyExistingToken = async () => {
-  //   if ('auth-token' in localStorage) {
-  //     const token = localStorage.getItem('auth-token');
-  //     if (await verifyToken(token)) {
-  //       this.setState({ isAuthenticated: true });
-  //     } else {
-  //       localStorage.removeItem('auth-token');
-  //     }
-  //   }
-  // };
 
   render() {
     return (

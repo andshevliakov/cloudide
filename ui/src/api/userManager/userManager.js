@@ -1,13 +1,11 @@
-import axios from 'axios';
-import routes from "../../routes";
-import managerUrl from '../../envloader';
+import api from '../api';
+import routes from '../../routes';
 
 class UserManager {
 
     verifyUser = async (user) => {
-        const url = managerUrl + routes.userRoute.verifyUser;
         try {
-            const response = await axios.get(url, {
+            const response = await api.get(routes.userRoute.verifyUser, {
             params: {
               username: user.username,
               password: user.password,
@@ -20,9 +18,8 @@ class UserManager {
     };
 
     createUser = async (user) => {
-    const url = managerUrl + routes.userRoute.createUser;
     try {
-      const response = await axios.post(url, {
+      const response = await api.post(routes.userRoute.createUser, {
         'name': user.name,
         'surname': user.surname,
         'username': user.username,

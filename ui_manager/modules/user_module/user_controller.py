@@ -1,7 +1,7 @@
 from flask import Request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import SQLAlchemyError
-from k8s_controller.k8s_controller import K8SController
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from modules.k8s_module.k8s_controller import K8SController
 from kubernetes.client import ApiException
 
 db = SQLAlchemy()
@@ -47,13 +47,17 @@ class UserController:
         }
         user = User(values)
         result = db.session.query(User).filter_by(username=user.username,
-                                                  password=user.password).first_or_404()
-        print(result)
-        if result:
+                                                  password=user.password).first()
+        if result is not None:
             response = {
                 'username': username
             }
             return (response, 200)
+        else:
+            response = {
+                'message': 'No such user'
+            }
+            return (response, 404)
 
     @staticmethod
     async def create_user(request: Request) -> tuple:
@@ -66,10 +70,17 @@ class UserController:
             k8sController = K8SController()
             k8sController.create_user(
                 name=user.name, username=user.username)
-        except SQLAlchemyError as error:
+        except IntegrityError as error:
             db.session.rollback()
             response = {
                 'message': 'User exists',
+                'details': str(error),
+            }
+            return (response, 409)
+        except SQLAlchemyError as error:
+            db.session.rollback()
+            response = {
+                'message': 'Unknown database error',
                 'details': str(error),
             }
             return (response, 500)
@@ -82,6 +93,6 @@ class UserController:
             }
             return (response, 500)
         response = {
-            'message': 'User created'
+            'message': 'User registered'
         }
         return (response, 201)

@@ -1,13 +1,11 @@
-import axios from 'axios';
-import routes from "../../routes";
-import managerUrl from '../../envloader';
+import api from '../api';
+import routes from '../../routes';
 
 class PackageManager {
 
     installPackage = async (searchTerm) => {
-        const url = managerUrl + routes.packageRoute.installPackage;
         try {
-            const response = await axios.post(url, {
+            const response = await api.post(routes.packageRoute.installPackage, {
                 'packageName': searchTerm
             });
             return response;

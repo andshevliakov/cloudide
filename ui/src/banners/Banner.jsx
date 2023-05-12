@@ -10,7 +10,6 @@ const Banner = (props) => {
     const [warningMessage, setWarningMessage] = useState(false);
 
     useEffect(() => {
-        console.log(state, message)
         if (state === BannerState.Error) {
             setErrorMessage(true);
         } else if (state === BannerState.Info) {

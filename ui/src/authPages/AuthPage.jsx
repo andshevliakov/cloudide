@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import User from '../entities/user';
 import UserManager from '../api/userManager/userManager';
 import TokenManager from '../api/tokenManager/tokenManager';
@@ -17,6 +17,7 @@ const AuthPage = () => {
     const [bannerMessage, setBannerMessage] = useState('');
     const [showBanner, setShowBanner] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
 
     const isLoginPage = location.pathname === '/login';
     const isSignupPage = location.pathname === '/signup';
@@ -31,6 +32,23 @@ const AuthPage = () => {
         return () => clearTimeout(bannerTimer);
     }, [showBanner]);
 
+    useEffect(() => {
+        verifyExistingToken();
+    })
+
+    const verifyExistingToken = () => {
+        if ('auth-token' in localStorage) {
+            tokenManager.verifyToken().then((result) => {
+                if (!result) {
+                    localStorage.removeItem('auth-token');
+                } else {
+                    navigate('/');
+                }
+            })
+        }
+    };
+
+
     const onLogin = async ({ username, password }) => {
         const user = new User('', '', username, password);
         const response = await userManager.verifyUser(user);
@@ -38,6 +56,7 @@ const AuthPage = () => {
             const response = await tokenManager.generateToken(user.username);
             if (response.status === 200) {
                 localStorage.setItem('auth-token', response.data.token);
+                navigate('/')
             } else if (response.status >= 400) {
                 setBannerState(BannerState.Error);
                 if (response.data) {
@@ -65,6 +84,7 @@ const AuthPage = () => {
             setBannerState(BannerState.Info);
             setBannerMessage(response.data.message.toString());
             setShowBanner(true);
+            navigate('/login')
         } else if (response.status >= 400) {
             setBannerState(BannerState.Error);
             if (response.data) {
