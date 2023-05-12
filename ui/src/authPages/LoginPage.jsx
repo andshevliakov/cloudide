@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const LoginPage = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
 
 
     const handleUsernameChange = (event) => {

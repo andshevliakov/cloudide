@@ -1,15 +1,11 @@
-import axios from "axios";
-import managerUrl from "../../envloader";
+import api from "../api";
 import routes from "../../routes";
 
 class TokenManager {
 
-    verifyToken = async (token) => {
-        const url = managerUrl + routes.tokenRoute.verifyToken;
+    verifyToken = async () => {
         try {
-            await axios.post( url, {
-                'token': token,
-            });
+            await api.get(routes.tokenRoute.verifyToken);
             return true;
         } catch(error) {
             if (error.response && error.response.status !== 401) {
@@ -20,9 +16,8 @@ class TokenManager {
     };
 
     generateToken = async (username) => {
-        const url = managerUrl + routes.tokenRoute.generateToken
         try {
-            const response = await axios.get(url, {
+            const response = await api.get(routes.tokenRoute.generateToken, {
               params: {
                 username: username,
               }

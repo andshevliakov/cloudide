@@ -1,13 +1,11 @@
-import axios from 'axios';
+import api from "../api";
 import routes from "../../routes";
-import managerUrl from '../../envloader';
 
 class CodeManager {
 
     handleRun = async (code) => {
-        const url = managerUrl + routes.codeRoute.runCode;
         try {
-            const response = await axios.post(url, {
+            const response = await api.post(routes.codeRoute.runCode, {
                 'code': code
             });
             return response;

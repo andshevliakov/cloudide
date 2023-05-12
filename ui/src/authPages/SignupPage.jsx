@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './SignupPage.css';
 
 const SignupPage = ({ onSignUp }) => {
@@ -9,7 +9,6 @@ const SignupPage = ({ onSignUp }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const navigate = useNavigate();
 
 
     const handleNameChange = (event) => {
@@ -34,9 +33,7 @@ const SignupPage = ({ onSignUp }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(onSignUp)
         await onSignUp({ name, surname, username, password });
-        navigate('/login')
     };
 
     const isFormValid = () => {
