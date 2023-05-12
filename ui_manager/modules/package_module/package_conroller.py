@@ -31,7 +31,7 @@ class PackageController:
             data = request.get_json()
             response = requests.post(
                 "http://" + executor_endpoint + '/code/install', json=data, headers={"Content-Type": "application/json"}, timeout=600)
-            return (response.content, 200)
+            return (response.json(), 200)
         else:
             response = {
                 'message': 'Unable to retrieve executor endpoint'

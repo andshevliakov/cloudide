@@ -29,9 +29,16 @@ class CodeController:
 
         if executor_endpoint != '':
             data = request.get_json()
-            response = requests.post(
-                "http://" + executor_endpoint + '/code/run', json=data, headers={"Content-Type": "application/json"}, timeout=600)
-            return (response.content, 200)
+            try:
+                response = requests.post(
+                    "http://" + executor_endpoint + '/code/run', json=data, headers={"Content-Type": "application/json"}, timeout=600)
+                return (response.json(), 200)
+            except requests.exceptions.ConnectionError as error:
+                response = {
+                    'message': 'Unable to establish connection',
+                    'details': str(error),
+                }
+                return (response, 503)
         else:
             response = {
                 'message': 'Unable to retrieve executor endpoint'
