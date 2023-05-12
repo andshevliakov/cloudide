@@ -10,8 +10,6 @@ spec:
   http:
   - match:
     - uri:
-        exact: /
-    - uri:
         prefix: /ide
     rewrite:
       uri: /ide
@@ -29,3 +27,21 @@ spec:
         host: ui-manager-service
         port:
           number: 5000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: redirect-basepath-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - cloudide-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    redirect:
+      uri: /ide
+      redirectCode: 301
+
