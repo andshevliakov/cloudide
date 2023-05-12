@@ -12,9 +12,9 @@ spec:
     - uri:
         exact: /
     - uri:
-        prefix: /ui
+        prefix: /ide
     rewrite:
-      uri: /ui
+      uri: /ide
     route:
     - destination:
         host: ui-app-service
@@ -22,7 +22,8 @@ spec:
           number: 80
   - match:
     - uri:
-        prefix: /api
+        # TODO versioning
+        prefix: /api/v1
     route:
     - destination:
         host: ui-manager-service

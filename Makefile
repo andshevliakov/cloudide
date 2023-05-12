@@ -12,10 +12,14 @@ REACT_APP_MANAGER_URI ?=
 build-all:
 	make -C ui_manager build-image
 	make -C ui build-image
+	make -C executor_server build-image
+	make -C userController docker-build
 
 push-all:
 	make -C ui_manager push-image
 	make -C ui push-image
+	make -C executor_server push-image
+	make -C userController docker-push
 
 build-and-push:
 	make -C ui_manager build-and-push-image

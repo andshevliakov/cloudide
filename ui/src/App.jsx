@@ -10,7 +10,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <Router basename='/ide'>
+      <Router basename="/ide">
         <Routes>
           <Route path="/" element={
             <MainCanvas />
