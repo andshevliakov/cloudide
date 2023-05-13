@@ -1,5 +1,4 @@
-import requests
-from flask import Blueprint, request, jsonify, Response
+from flask import Blueprint, request, jsonify
 from modules.code_module.code_controller import CodeController
 
 code_blueprint = Blueprint('code_blueprint', __name__)
