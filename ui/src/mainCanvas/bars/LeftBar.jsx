@@ -4,6 +4,7 @@ import '../../assets/styles/variables.css';
 import packageslogo from "../../assets/packages.png";
 import { useState } from "react";
 import PackageManager from "../../api/packageManager/packageManager";
+import { useNavigate } from "react-router";
 
 const packageManager = new PackageManager();
 
@@ -17,11 +18,16 @@ const LeftBar = () => {
     const [showMenu, setShowMenu] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [installationResult, setInstallationResult] = useState();
+    const navigate = useNavigate();
 
     const handleKeyDown = async (event) => {
         if (event.keyCode === 13) {
             const response = await packageManager.installPackage(searchTerm);
-            setInstallationResult(response.data.message);
+            if (response.status !== 401) {
+                setInstallationResult(response.data.message);
+            } else {
+                navigate('/login');
+            }
         }
     };
 

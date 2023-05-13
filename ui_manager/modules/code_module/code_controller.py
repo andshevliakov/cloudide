@@ -39,8 +39,7 @@ class CodeController:
                     'details': str(error),
                 }
                 return (response, 503)
-        else:
-            response = {
-                'message': 'Unable to retrieve executor endpoint'
-            }
-            return (response, 500)
+        response = {
+            'message': 'Unable to retrieve executor endpoint'
+        }
+        return (response, 500)

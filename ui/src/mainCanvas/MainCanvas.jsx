@@ -23,7 +23,6 @@ const MainCanvas = () => {
         if ('auth-token' in localStorage) {
             tokenManager.verifyToken().then((result) => {
                 if (!result) {
-                    localStorage.removeItem('auth-token');
                     navigate('/login');
                 }
             })
@@ -38,8 +37,12 @@ const MainCanvas = () => {
 
     const handleRun = async () => {
         const response = await codeManager.handleRun(code);
-        setRunResult(response.data.message.toString());
-        setRunResultExists(true);
+        if (response.status !== 401) {
+            setRunResult(response.data.message.toString());
+            setRunResultExists(true);
+        } else {
+            navigate('/login');
+        }
     };
 
     return (
