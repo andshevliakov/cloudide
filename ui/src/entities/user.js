@@ -1,7 +1,7 @@
 import { SHA256 } from 'crypto-js';
 
 class User{
-    constructor(name,surname,username,password) {
+    constructor(name,surname,username,password='') {
         this.name = name;
         this.surname = surname;
         this.username = username;
@@ -9,7 +9,9 @@ class User{
     };
 
     hashPassword = (password) => {
-        return SHA256(password).toString();
+        if (password !== '')
+            return SHA256(password).toString();
+        return password
     };
 }
 

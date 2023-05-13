@@ -2,6 +2,7 @@ from flask import Request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from modules.k8s_module.k8s_controller import K8SController
+from modules.token_module.token_controller import TokenController
 from kubernetes.client import ApiException
 
 db = SQLAlchemy()
@@ -53,11 +54,11 @@ class UserController:
                 'username': username
             }
             return (response, 200)
-        else:
-            response = {
-                'message': 'No such user'
-            }
-            return (response, 404)
+
+        response = {
+            'message': 'No such user'
+        }
+        return (response, 404)
 
     @staticmethod
     async def create_user(request: Request) -> tuple:
@@ -96,3 +97,26 @@ class UserController:
             'message': 'User registered'
         }
         return (response, 201)
+
+    @staticmethod
+    async def get_user(request: Request) -> tuple:
+        response = {}
+        result = await TokenController.authorize_token(request=request)
+        if 'message' in result:
+            return (result, 401)
+
+        user = User({'username': result['username']})
+        found = db.session.query(User).filter_by(
+            username=user.username).first()
+        if found:
+            response = {
+                'name': found.name,
+                'surname': found.surname,
+                'username': found.username,
+            }
+            return (response, 200)
+
+        response = {
+            'message': 'No such user'
+        }
+        return (response, 404)

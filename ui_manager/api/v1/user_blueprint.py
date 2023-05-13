@@ -15,3 +15,9 @@ async def add_user():
 async def verify_user():
     response, status = await UserController.verify_user(request=request)
     return jsonify(response), status
+
+
+@user_blueprint.route('/info', methods=['GET'])
+async def get_user():
+    response, status = await UserController.get_user(request=request)
+    return jsonify(response), status

@@ -4,19 +4,24 @@ import TokenManager from '../api/tokenManager/tokenManager'
 import Bars from './bars/Bars'
 import Cell from './cell/Cell'
 import { useEffect, useState } from 'react';
+import UserManager from '../api/userManager/userManager';
+import User from '../entities/user';
 
 const codeManager = new CodeManager();
 const tokenManager = new TokenManager();
+const userManager = new UserManager();
 
 const MainCanvas = () => {
 
     const [runResult, setRunResult] = useState('');
     const [runResultExists, setRunResultExists] = useState(false);
+    const [sessionUser, setSessionUser] = useState(new User('', '', ''));
     const [code, setCode] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         verifyExistingToken();
+        getSessionUser();
     }, [])
 
     const verifyExistingToken = () => {
@@ -29,6 +34,18 @@ const MainCanvas = () => {
         } else {
             navigate('login');
         }
+    };
+
+    const getSessionUser = () => {
+        userManager.getUser().then((response) => {
+            if (response.status !== 200) {
+                localStorage.removeItem('auth-token');
+                navigate('/login');
+            } else {
+                const user = new User(response.data.name, response.data.surname, response.data.username);
+                setSessionUser(user);
+            }
+        })
     };
 
     const updateCode = (newCode) => {
@@ -50,6 +67,7 @@ const MainCanvas = () => {
             <Bars
                 handleRun={handleRun}
                 runResult={runResult}
+                sessionUser={sessionUser}
             />
             <Cell
                 initialValue={code}

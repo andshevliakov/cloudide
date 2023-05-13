@@ -31,6 +31,16 @@ class UserManager {
       return error.response
     }
   };
+
+  getUser = async () => {
+    try {
+      const response = await api.get(routes.userRoute.getUser);
+      return response;
+    } catch (error) {
+      console.error(`${error.response.status} ${error.response.data}`);
+      return error.response;
+    }
+  }
 }
 
 export default UserManager;
