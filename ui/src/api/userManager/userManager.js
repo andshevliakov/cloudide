@@ -20,10 +20,7 @@ class UserManager {
     createUser = async (user) => {
     try {
       const response = await api.post(routes.userRoute.createUser, {
-        'name': user.name,
-        'surname': user.surname,
-        'username': user.username,
-        'password': user.password,
+        ...user,
       });
       return response
     } catch (error) {
@@ -37,6 +34,18 @@ class UserManager {
       const response = await api.get(routes.userRoute.getUser);
       return response;
     } catch (error) {
+      console.error(`${error.response.status} ${error.response.data}`);
+      return error.response;
+    }
+  }
+
+  updateUser = async (user) => {
+    try {
+      const response = await api.put(routes.userRoute.updateUser, {
+        ...user,
+      })
+      return response;
+    } catch(error) {
       console.error(`${error.response.status} ${error.response.data}`);
       return error.response;
     }

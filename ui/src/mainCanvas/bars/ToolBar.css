@@ -27,7 +27,7 @@
     flex-grow: 1;
 }
 
-button {
+.toolbar-rightside button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -38,11 +38,11 @@ button {
     margin-left: 10px;
 }
 
-button:hover {
+.toolbar-rightside button:hover {
     background-color: #555;
 }
 
-button:focus {
+.toolbar-rightside button:focus {
     outline: none;
 }
 

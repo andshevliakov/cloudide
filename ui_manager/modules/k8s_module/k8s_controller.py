@@ -42,3 +42,19 @@ class K8SController:
                 return user_status['status']['executorEndpoint']
 
         return ''
+
+    def update_user(self, name: str, username: str) -> None:
+        obj = self._custom_api.get_cluster_custom_object(
+            group=self._crd.spec.group,
+            version=self._crd.spec.versions[0].name,
+            plural=self._crd.spec.names.plural,
+            name=username
+        )
+        obj['spec']['name'] = name
+        self._custom_api.replace_cluster_custom_object(
+            group=self._crd.spec.group,
+            version=self._crd.spec.versions[0].name,
+            plural=self._crd.spec.names.plural,
+            name=username,
+            body=obj
+        )

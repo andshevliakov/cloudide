@@ -128,7 +128,7 @@ class UserController:
         result = await TokenController.authorize_token(request=request)
         if 'message' in result:
             return (result, 401)
-
+        # Update CR name
         if data['username'] == result['username']:
             found = db.session.query(User).filter_by(
                 username=data['username']).first()
@@ -137,6 +137,15 @@ class UserController:
                 found.surname = data['surname']
                 if data['password'] != '':
                     found.password = data['password']
+                try:
+                    k8s_controller = K8SController()
+                    k8s_controller.update_user(found.name, found.username)
+                except ApiException as error:
+                    response = {
+                        'message': 'Internal Kubernetes error',
+                        'details': str(error),
+                    }
+                    return (response, 500)
                 db.session.commit()
                 response = {
                     'message': 'Updated'

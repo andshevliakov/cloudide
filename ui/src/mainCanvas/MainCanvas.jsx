@@ -48,6 +48,18 @@ const MainCanvas = () => {
         })
     };
 
+    const updateUser = async (name, surname, username, password) => {
+        const user = new User(name, surname, username, password);
+        const response = await userManager.updateUser(user);
+        if (response.status !== 401) {
+            if (response.status === 200) {
+                setSessionUser(user);
+            }
+        } else {
+            navigate('/login');
+        }
+    };
+
     const updateCode = (newCode) => {
         setCode(newCode);
     };
@@ -68,6 +80,7 @@ const MainCanvas = () => {
                 handleRun={handleRun}
                 runResult={runResult}
                 sessionUser={sessionUser}
+                updateUser={updateUser}
             />
             <Cell
                 initialValue={code}

@@ -27,6 +27,7 @@ const routes = {
         verifyUser: userRoutes() + '/verify',
         createUser: userRoutes() + '/create',
         getUser: userRoutes() + '/info',
+        updateUser: userRoutes() + '/update',
     },
     tokenRoute: {
         generateToken: tokenRoutes() + '/generate',
