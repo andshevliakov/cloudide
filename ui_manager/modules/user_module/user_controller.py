@@ -120,3 +120,34 @@ class UserController:
             'message': 'No such user'
         }
         return (response, 404)
+
+    @staticmethod
+    async def update_user(request: Request) -> tuple:
+        response = {}
+        data = request.get_json()
+        result = await TokenController.authorize_token(request=request)
+        if 'message' in result:
+            return (result, 401)
+
+        if data['username'] == result['username']:
+            found = db.session.query(User).filter_by(
+                username=data['username']).first()
+            if found:
+                found.name = data['name']
+                found.surname = data['surname']
+                if data['password'] != '':
+                    found.password = data['password']
+                db.session.commit()
+                response = {
+                    'message': 'Updated'
+                }
+                return (response, 200)
+            response = {
+                'message': 'No such user'
+            }
+            return (response, 404)
+
+        response = {
+            'message': 'Missed identity'
+        }
+        return (response, 401)
