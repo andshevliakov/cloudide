@@ -15,6 +15,7 @@ class TokenController:
     async def generate_token(request: Request) -> tuple:
         response = {}
         username = request.args.get('username')
+        name = request.args.get('name')
         if username is None:
             response = {
                 'message': 'Username is not set'
@@ -23,6 +24,7 @@ class TokenController:
 
         payload = {
             'username': username,
+            'name': name,
             'exp': datetime.utcnow() + timedelta(minutes=20)
         }
         token = jwt.encode(

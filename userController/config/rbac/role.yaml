@@ -19,6 +19,7 @@ rules:
   - deployments
   verbs:
   - list
+  - update
   - watch
   - create
 - apiGroups:

@@ -11,6 +11,12 @@ async def add_user():
     return jsonify(response), status
 
 
+@user_blueprint.route("/createK8s", methods=['POST'])
+async def create_k8s_user():
+    response, status = await UserController.create_k8s_user(request=request)
+    return jsonify(response), status
+
+
 @user_blueprint.route('/verify', methods=['GET'])
 async def verify_user():
     response, status = await UserController.verify_user(request=request)
@@ -26,4 +32,16 @@ async def get_user():
 @user_blueprint.route('/update', methods=['PUT'])
 async def update_user():
     response, status = await UserController.update_user(request=request)
+    return jsonify(response), status
+
+
+@user_blueprint.route('verifySpec', methods=['POST'])
+async def verify_executor_spec():
+    response, status = await UserController.verify_executor_spec(request=request)
+    return jsonify(response), status
+
+
+@user_blueprint.route('/executorSpec', methods=['POST'])
+async def add_executor_spec():
+    response, status = await UserController.add_executor_spec(request=request)
     return jsonify(response), status

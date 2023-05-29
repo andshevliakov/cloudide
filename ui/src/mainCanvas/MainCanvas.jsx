@@ -16,7 +16,7 @@ const MainCanvas = () => {
     const [runResult, setRunResult] = useState('');
     const [runResultExists, setRunResultExists] = useState(false);
     const [sessionUser, setSessionUser] = useState(new User('', '', ''));
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState(localStorage.getItem("user-code") || '');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,6 +62,7 @@ const MainCanvas = () => {
 
     const updateCode = (newCode) => {
         setCode(newCode);
+        localStorage.setItem("user-code", newCode);
     };
 
     const handleRun = async () => {

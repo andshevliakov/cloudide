@@ -11,3 +11,10 @@ metadata:
 spec:
   name: admin
   username: test
+  executorSpec:
+    limits:
+      cpu: 500m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi

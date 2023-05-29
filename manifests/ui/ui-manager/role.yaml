@@ -16,6 +16,7 @@ rules:
   resources:
   - users
   verbs:
+  - get
   - create
 - apiGroups:
   - cloudide.com

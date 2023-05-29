@@ -17,13 +17,15 @@ limitations under the License.
 package v1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // UserSpec defines the desired state of User
 type UserSpec struct {
-	Name     string `json:"name"`
-	Username string `json:"username"`
+	Name         string                      `json:"name"`
+	Username     string                      `json:"username"`
+	ExecutorSpec corev1.ResourceRequirements `json:"executorSpec,omitempty"`
 }
 
 // UserStatus defines the observed state of User

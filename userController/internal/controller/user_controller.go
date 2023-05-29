@@ -52,7 +52,7 @@ type UserReconciler struct {
 // +kubebuilder:rbac:groups=cloudide.com,resources=users/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=cloudide.com,resources=users/finalizers,verbs=update
 // +kubebuilder:rbac:groups=core,resources=services;namespaces,verbs=get;create
-// +kubebuilder:rbac:group=apps,resources=deployments,verbs=get;create
+// +kubebuilder:rbac:group=apps,resources=deployments,verbs=get;create;update
 func (r *UserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
@@ -67,24 +67,42 @@ func (r *UserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		return ctrl.Result{}, err
 	}
 
-	resourceName := createUserResourceService(instance.Spec.Username)
+	if isExecutorSpecEmpty(instance.Spec.ExecutorSpec) {
+		logger.Info("ExecutorSpec is empty, skip processing")
+		return ctrl.Result{}, nil
+	}
+
+	resourceName := createUserResourceName(instance.Spec.Username)
+	serviceName := createUserResourceService(instance.Spec.Username)
 	resourceNamespace := createUserResourceNamespace(instance.Spec.Username)
 
 	err = r.createExecutorNamespace(ctx, instance, resourceNamespace)
 	if err != nil {
 		logger.Error(err, "Unable to create namespace", "user", instance.Spec.Username)
+		statusError := r.updateErrorStatus(ctx, instance, err.Error())
+		if statusError != nil {
+			logger.Error(err, "Unable to update Status", "user", instance.Spec.Username)
+		}
 		return ctrl.Result{}, err
 	}
 
 	err = r.createExecutorDeployment(ctx, instance, resourceName, resourceNamespace)
 	if err != nil {
 		logger.Error(err, "Unable to create deployment", "user", instance.Spec.Username)
+		statusError := r.updateErrorStatus(ctx, instance, err.Error())
+		if statusError != nil {
+			logger.Error(err, "Unable to update Status", "user", instance.Spec.Username)
+		}
 		return ctrl.Result{}, err
 	}
 
-	endpoint, err := r.createExecutorService(ctx, instance, resourceName, resourceNamespace)
+	endpoint, err := r.createExecutorService(ctx, instance, serviceName, resourceNamespace)
 	if err != nil {
 		logger.Error(err, "Unable to create service", "user", instance.Spec.Username)
+		statusError := r.updateErrorStatus(ctx, instance, err.Error())
+		if statusError != nil {
+			logger.Error(err, "Unable to update Status", "user", instance.Spec.Username)
+		}
 		return ctrl.Result{}, err
 	}
 
@@ -95,6 +113,22 @@ func (r *UserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 	}
 
 	return ctrl.Result{}, nil
+}
+
+func (r *UserReconciler) updateErrorStatus(ctx context.Context, user *cloudidecomv1.User, errorMessage string) error {
+	logger := log.FromContext(ctx)
+
+	logger.Info("Update error status", "user", user.Spec.Username)
+	user.Status.Error = errorMessage
+	err := r.Status().Update(ctx, user)
+	if err != nil {
+		logger.Error(err, "Status update failed", "name", user.Spec.Username)
+		return err
+	} else {
+		logger.Info("Error Status updated.")
+	}
+
+	return nil
 }
 
 func (r *UserReconciler) updateEndpointStatus(ctx context.Context, user *cloudidecomv1.User, endpoint string) error {
@@ -197,6 +231,8 @@ func (r *UserReconciler) createExecutorNamespace(ctx context.Context, user *clou
 
 func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *cloudidecomv1.User, deployName string, deployNamespace string) error {
 	logger := log.FromContext(ctx)
+	executorImageBase := GetEnvOr("EXECUTOR_IMAGE_BASE", "busybox")
+	executorImageTag := GetEnvOr("EXECUTOR_IMAGE_TAG", "latest")
 
 	found := &appsv1.Deployment{}
 	err := r.Get(ctx, types.NamespacedName{Name: deployName, Namespace: deployNamespace}, found)
@@ -226,12 +262,13 @@ func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *clo
 							Containers: []corev1.Container{
 								{
 									Name:  "executor",
-									Image: "andriisoft/cloudide-executor:latest",
+									Image: fmt.Sprintf("%s:%s", executorImageBase, executorImageTag),
 									Ports: []corev1.ContainerPort{
 										{
 											ContainerPort: TARGET_PORT,
 										},
 									},
+									Resources: user.Spec.ExecutorSpec,
 								},
 							},
 						},
@@ -250,6 +287,17 @@ func (r *UserReconciler) createExecutorDeployment(ctx context.Context, user *clo
 			}
 		} else {
 			return err
+		}
+	} else {
+
+		if !areEqualResources(found.Spec.Template.Spec.Containers[0].Resources, user.Spec.ExecutorSpec) {
+			logger.Info("Updating deployment")
+			found.Spec.Template.Spec.Containers[0].Resources = user.Spec.ExecutorSpec
+			err := r.Update(ctx, found)
+			if err != nil {
+				logger.Error(err, "Deployment update failed", "user", user.Spec.Username)
+				return err
+			}
 		}
 	}
 	return nil

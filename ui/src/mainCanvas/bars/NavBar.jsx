@@ -3,6 +3,11 @@ import "./NavBar.css";
 import { useNavigate } from "react-router";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import TokenManager from "../../api/tokenManager/tokenManager";
+import UserManager from "../../api/userManager/userManager";
+
+const tokenManager = new TokenManager();
+const userManager = new UserManager();
 
 const Navbar = (props) => {
   const { sessionUser, updateUser } = props
@@ -18,6 +23,7 @@ const Navbar = (props) => {
 
   const handleLogoutClick = () => {
     localStorage.removeItem("auth-token");
+    localStorage.removeItem("user-code");
     navigate('/login');
   };
 
@@ -25,6 +31,22 @@ const Navbar = (props) => {
     setNewName(sessionUser.name);
     setNewSurname(sessionUser.surname);
   }, [sessionUser, isPopupOpen])
+
+  useEffect(() => {
+    verifyExistingToken();
+  }, [])
+
+  const verifyExistingToken = () => {
+    if ('auth-token' in localStorage) {
+      tokenManager.verifyToken().then((result) => {
+        if (!result) {
+          navigate('/login');
+        }
+      })
+    } else {
+      navigate('/login');
+    }
+  };
 
   const handleProfileClick = () => {
     setIsEditable(false);
@@ -38,6 +60,13 @@ const Navbar = (props) => {
 
   const handleEditButtonOnClick = () => {
     setIsEditable(!isEditable);
+  };
+
+  const handleConfigurationClick = async () => {
+    const response = await userManager.verifyUserExecutorSpec();
+    if (response.status === 200) {
+      navigate('/spawner', { state: { env: response.data.executorSpec } });
+    }
   };
 
   const handleNameChange = (event) => {
@@ -92,7 +121,7 @@ const Navbar = (props) => {
               <div className="user-list">
                 <ul>
                   <li onClick={handleProfileClick}>Profile</li>
-                  <li>Configuration</li>
+                  <li onClick={handleConfigurationClick}>Configuration</li>
                   <li onClick={handleLogoutClick}>Logout</li>
                 </ul>
               </div>

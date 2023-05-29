@@ -72,6 +72,11 @@ spec:
         - --leader-elect
         image: andriisoft/usercontroller:latest
         name: manager
+        env:
+        - name: EXECUTOR_IMAGE_BASE
+          value: andriisoft/cloudide-executor
+        - name: EXECUTOR_IMAGE_TAG
+          value: latest
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:

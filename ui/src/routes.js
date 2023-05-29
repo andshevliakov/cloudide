@@ -26,8 +26,11 @@ const routes = {
     userRoute: {
         verifyUser: userRoutes() + '/verify',
         createUser: userRoutes() + '/create',
+        createK8sUser: userRoutes() + '/createK8s',
         getUser: userRoutes() + '/info',
         updateUser: userRoutes() + '/update',
+        verifyExecutorSpec: userRoutes() + '/verifySpec',
+        addExecutorSpec: userRoutes() + '/executorSpec',
     },
     tokenRoute: {
         generateToken: tokenRoutes() + '/generate',

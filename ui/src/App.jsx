@@ -5,26 +5,19 @@ import './App.css';
 
 import AuthPage from './authPages/AuthPage';
 import MainCanvas from './mainCanvas/MainCanvas';
+import SpawnerPage from './spawnerPage/spawnerPage';
 
-class App extends React.Component {
-
-  render() {
-    return (
-      <Router basename="/ide">
-        <Routes>
-          <Route path="/" element={
-            <MainCanvas />
-          } />
-          <Route path="/login" element={
-            <AuthPage />
-          } />
-          <Route path="/signup" element={
-            <AuthPage />
-          } />
-        </Routes>
-      </Router >
-    )
-  }
+function App() {
+  return (
+    <Router basename="/ide">
+      <Routes>
+        <Route path="/" element={<MainCanvas />} />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/signup" element={<AuthPage />} />
+        <Route path='/spawner' element={<SpawnerPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

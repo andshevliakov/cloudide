@@ -15,10 +15,11 @@ class TokenManager {
         }
     };
 
-    generateToken = async (username) => {
+    generateToken = async (name, username) => {
         try {
             const response = await api.get(routes.tokenRoute.generateToken, {
               params: {
+                name: name,
                 username: username,
               }
             });

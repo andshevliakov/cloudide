@@ -58,3 +58,30 @@ class K8SController:
             name=username,
             body=obj
         )
+
+    def verify_executor_spec(self, username: str) -> dict:
+        obj = self._custom_api.get_cluster_custom_object(
+            group=self._crd.spec.group,
+            version=self._crd.spec.versions[0].name,
+            plural=self._crd.spec.names.plural,
+            name=username
+        )
+        if 'executorSpec' in obj['spec']:
+            return obj['spec']['executorSpec']
+        return None
+
+    def add_executor_spec(self, spec: dict, username: str) -> None:
+        obj = self._custom_api.get_cluster_custom_object(
+            group=self._crd.spec.group,
+            version=self._crd.spec.versions[0].name,
+            plural=self._crd.spec.names.plural,
+            name=username
+        )
+        obj['spec']['executorSpec'] = spec
+        self._custom_api.replace_cluster_custom_object(
+            group=self._crd.spec.group,
+            version=self._crd.spec.versions[0].name,
+            plural=self._crd.spec.names.plural,
+            name=username,
+            body=obj
+        )

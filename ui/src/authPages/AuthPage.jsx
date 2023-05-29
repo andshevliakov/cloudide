@@ -18,6 +18,16 @@ const AuthPage = () => {
     const [showBanner, setShowBanner] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+    const env = {
+        requests: {
+            cpu: '100m',
+            memory: '64Mi'
+        },
+        limits: {
+            cpu: '500m',
+            memory: '128Mi'
+        }
+    }
 
     const isLoginPage = location.pathname === '/login';
     const isSignupPage = location.pathname === '/signup';
@@ -53,14 +63,30 @@ const AuthPage = () => {
         const user = new User('', '', username, password);
         const response = await userManager.verifyUser(user);
         if (response.status === 200) {
-            const response = await tokenManager.generateToken(user.username);
-            if (response.status === 200) {
-                localStorage.setItem('auth-token', response.data.token);
-                navigate('/')
-            } else if (response.status >= 400) {
+            const tokenResponse = await tokenManager.generateToken(response.data.name, response.data.username);
+            if (tokenResponse.status === 200) {
+                localStorage.setItem('auth-token', tokenResponse.data.token);
+                const isK8s = await userManager.createK8sUser();
+                if (isK8s) {
+                    const k8s_response = await userManager.verifyUserExecutorSpec();
+                    if (k8s_response.status === 404)
+                        navigate('/spawner', { state: { env: env } });
+                    else if (k8s_response.status === 200) {
+                        navigate('/');
+                    } else {
+                        localStorage.removeItem('auth-token');
+                        setBannerMessage('Kubernetes verification failed');
+                        setBannerState(true);
+                    }
+                } else {
+                    localStorage.removeItem('auth-token');
+                    setBannerMessage('Kubernetes User error');
+                    setShowBanner(true);
+                }
+            } else if (tokenResponse.status >= 400) {
                 setBannerState(BannerState.Error);
-                if (response.data) {
-                    setBannerMessage(response.data.message.toString());
+                if (tokenResponse.data) {
+                    setBannerMessage(tokenResponse.data.message.toString());
                 } else {
                     setBannerMessage('Internal Server Error');
                 }

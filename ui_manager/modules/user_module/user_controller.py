@@ -51,7 +51,8 @@ class UserController:
                                                   password=user.password).first()
         if result is not None:
             response = {
-                'username': username
+                'name': result.name,
+                'username': result.username
             }
             return (response, 200)
 
@@ -68,9 +69,6 @@ class UserController:
         try:
             db.session.add(user)
             db.session.commit()
-            k8sController = K8SController()
-            k8sController.create_user(
-                name=user.name, username=user.username)
         except IntegrityError as error:
             db.session.rollback()
             response = {
@@ -85,16 +83,29 @@ class UserController:
                 'details': str(error),
             }
             return (response, 500)
+        response = {
+            'message': 'User registered'
+        }
+        return (response, 201)
+
+    @staticmethod
+    async def create_k8s_user(request: Request) -> tuple:
+        response = {}
+        result = await TokenController.authorize_token(request=request)
+        if 'message' in result:
+            return (result, 401)
+        try:
+            k8sController = K8SController()
+            k8sController.create_user(
+                name=result['name'], username=result['username'])
         except ApiException as error:
-            db.session.delete(user)
-            db.session.commit()
             response = {
                 'message': 'Internal Kubernetes error',
                 'details': str(error),
             }
-            return (response, 500)
+            return (response, error.status)
         response = {
-            'message': 'User registered'
+            'message': 'k8s user created'
         }
         return (response, 201)
 
@@ -120,6 +131,58 @@ class UserController:
             'message': 'No such user'
         }
         return (response, 404)
+
+    @staticmethod
+    async def verify_executor_spec(request: Request) -> tuple:
+        response = {}
+        result = await TokenController.authorize_token(request=request)
+        if 'message' in result:
+            return (result, 401)
+        verification = False
+
+        try:
+            k8s_controller = K8SController()
+            verification = k8s_controller.verify_executor_spec(
+                username=result['username'])
+        except ApiException as error:
+            response = {
+                'message': 'Internal Kubernetes Error',
+                'details': str(error)
+            }
+            return (response, error.status)
+
+        if verification is not None:
+            response = {
+                'executorSpec': verification
+            }
+            return response, 200
+        response = {
+            'message': 'Spec not found'
+        }
+        return response, 404
+
+    @staticmethod
+    async def add_executor_spec(request: Request) -> tuple:
+        response = {}
+        data = request.get_json()
+        result = await TokenController.authorize_token(request=request)
+        if 'message' in result:
+            return (result, 401)
+
+        try:
+            k8s_controller = K8SController()
+            k8s_controller.add_executor_spec(data, result['username'])
+        except ApiException as error:
+            response = {
+                'message': 'Internal Kubernetes error',
+                'details': str(error),
+            }
+            return (response, 500)
+
+        response = {
+            'message': 'Executor updated'
+        }
+        return (response, 200)
 
     @staticmethod
     async def update_user(request: Request) -> tuple:
