@@ -20,7 +20,6 @@ spec:
           number: 80
   - match:
     - uri:
-        # TODO versioning
         prefix: /api/v1
     route:
     - destination:

@@ -1,4 +1,4 @@
-TAG ?= latest
+TAG ?= release-0.3
 
 MYSQL_ROOT_PASSWORD ?= cloudide
 MYSQL_DATABASE ?= users
@@ -10,15 +10,15 @@ MANAGER_HOST ?= ui-manager-service
 REACT_APP_MANAGER_URI ?= 
 
 build-all:
-	make -C ui_manager build-image
-	make -C ui build-image
-	make -C executor_server build-image
+	make -C ui_manager build-image TAG=$(TAG)
+	make -C ui build-image TAG=$(TAG)
+	make -C executor_server build-image TAG=$(TAG)
 	make -C userController docker-build
 
 push-all:
-	make -C ui_manager push-image
-	make -C ui push-image
-	make -C executor_server push-image
+	make -C ui_manager push-image TAG=$(TAG)
+	make -C ui push-image TAG=$(TAG)
+	make -C executor_server push-image TAG=$(TAG)
 	make -C userController docker-push
 
 build-and-push:
