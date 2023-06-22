@@ -20,12 +20,12 @@ const AuthPage = () => {
     const navigate = useNavigate();
     const env = {
         requests: {
-            cpu: '500m',
-            memory: '500Mi'
+            cpu: '1',
+            memory: '1Gi'
         },
         limits: {
             cpu: '1',
-            memory: '1Gi'
+            memory: '2Gi'
         }
     }
 
